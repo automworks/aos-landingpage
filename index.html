@@ -440,9 +440,11 @@ h1 .hl::after{
   transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .3s;
 }
 .event:hover{transform:translateY(-5px);box-shadow:0 24px 48px -24px rgba(24,20,16,.2);border-color:var(--line-strong);}
-.edate{display:flex;align-items:baseline;gap:.5rem;}
-.edate b{font-size:2.4rem;font-weight:700;letter-spacing:-.03em;line-height:.9;color:var(--ink);}
-.edate .em{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);}
+.edate{display:flex;flex-direction:column;align-items:flex-start;gap:.45rem;}
+.cal{width:60px;border:1px solid var(--line-strong);border-radius:7px;overflow:hidden;text-align:center;background:var(--paper);}
+.cal .mo{background:var(--ink);color:var(--paper);font-family:var(--font-mono);font-size:.55rem;letter-spacing:.14em;padding:.28rem 0;text-transform:uppercase;}
+.cal .dy{font-size:1.7rem;font-weight:700;padding:.22rem 0 .34rem;line-height:1;color:var(--ink);}
+.edate .yr{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;color:var(--ink-faint);}
 .event h3{font-size:1.1rem;font-weight:700;letter-spacing:-.015em;line-height:1.32;color:var(--ink);}
 .event p{font-size:.92rem;color:var(--ink-soft);line-height:1.6;}
 .efoot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-top:.5rem;}
@@ -822,7 +824,7 @@ footer .flinks{display:flex;gap:1.8rem;}
     </div>
     <div class="event-list">
       <div class="event reveal">
-        <div class="edate"><b>25</b><span class="em">Jun 2026</span></div>
+        <div class="edate"><div class="cal"><div class="mo">Jun</div><div class="dy">25</div></div><span class="yr">2026</span></div>
         <h3>Diagnose your operating system in 45 minutes</h3>
         <p>A live walkthrough of the readiness test, with anonymized profiles from real teams and what they did next.</p>
         <div class="efoot">
@@ -831,7 +833,7 @@ footer .flinks{display:flex;gap:1.8rem;}
         </div>
       </div>
       <div class="event reveal" data-d="1">
-        <div class="edate"><b>16</b><span class="em">Jul 2026</span></div>
+        <div class="edate"><div class="cal"><div class="mo">Jul</div><div class="dy">16</div></div><span class="yr">2026</span></div>
         <h3>Designing workflows for human + agent teams</h3>
         <p>How to redesign one real workflow so people and AI agents share context, ownership, and a feedback loop.</p>
         <div class="efoot">
@@ -840,7 +842,7 @@ footer .flinks{display:flex;gap:1.8rem;}
         </div>
       </div>
       <div class="event reveal" data-d="2">
-        <div class="edate"><b>6</b><span class="em">Aug 2026</span></div>
+        <div class="edate"><div class="cal"><div class="mo">Aug</div><div class="dy">6</div></div><span class="yr">2026</span></div>
         <h3>Cascading strategy without the slideware</h3>
         <p>Turning executive intent into team backlogs that still mean something by the time they ship.</p>
         <div class="efoot">
