@@ -17,6 +17,7 @@
   --ink:#181410;
   --ink-soft:#5C5546;
   --ink-faint:#8C8472;
+  --noir:#0C0A06; /* deeper warm black for dark surfaces */
   --line:#E2DACA;
   --line-strong:#CFC5B0;
   --amber:#FFCD00;
@@ -398,12 +399,26 @@ h1 .hl::after{
 .who b{display:block;font-size:.92rem;font-weight:600;line-height:1.3;}
 .who div span{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);}
 .advisory{
-  margin-top:3rem;border:1.5px solid var(--ink);border-radius:var(--radius);
-  padding:2rem 2.2rem;display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
-  background:var(--paper-raised);
+  margin-top:3rem;border-radius:var(--radius);
+  padding:2.6rem 2.4rem;display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(130% 150% at 100% 0%, rgba(255,205,0,.11), transparent 55%),
+    var(--noir);
+  border:1px solid rgba(246,242,234,.14);
+  box-shadow:-16px 16px 0 -4px rgba(24,20,16,.12);
 }
-.advisory h3{font-size:1.18rem;font-weight:700;letter-spacing:-.015em;margin-bottom:.3rem;}
-.advisory p{color:var(--ink-soft);font-size:.95rem;max-width:36rem;}
+.advisory .eyebrow{
+  display:inline-flex;align-items:center;gap:.5rem;margin-bottom:.75rem;
+  font-family:var(--font-mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);
+}
+.advisory .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber);}
+.advisory h3{font-size:1.32rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.45rem;color:var(--paper);}
+.advisory p{color:rgba(246,242,234,.6);font-size:.95rem;max-width:38rem;}
+.advisory .btn{
+  background:transparent;color:var(--paper);border-color:rgba(246,242,234,.38);white-space:nowrap;
+}
+.advisory .btn:hover{background:var(--amber);border-color:var(--amber);color:var(--ink);transform:translateY(-2px);}
 
 /* ===== EVENTS ===== */
 .events{padding:2rem 0 8rem;}
@@ -458,7 +473,7 @@ h1 .hl::after{
 .cta-card .row span{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber-text);white-space:nowrap;margin-left:1rem;}
 
 /* ===== FOOTER ===== */
-footer{padding:3.2rem 0;background:var(--ink);color:rgba(246,242,234,.5);border-top:1px solid rgba(246,242,234,.1);}
+footer{padding:3.2rem 0;background:var(--noir);color:rgba(246,242,234,.5);border-top:1px solid rgba(246,242,234,.1);}
 footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;}
 footer .logo .logo-word{color:var(--paper);}
 footer a{color:rgba(246,242,234,.6);text-decoration:none;font-size:.88rem;}
@@ -777,10 +792,11 @@ footer .flinks{display:flex;gap:1.8rem;}
     </div>
     <div class="advisory reveal">
       <div>
+        <span class="eyebrow">By invitation only</span>
         <h3>Join the Partner Advisory Council</h3>
         <p>Quarterly previews of the roadmap, early access to new assessment modules, and a direct line into how the OS evolves. Open to VPs and above at partner organizations.</p>
       </div>
-      <a href="mailto:hello@thedesigngym.com?subject=Partner%20Advisory%20Council" class="btn ghost">Sign up for partner advisory <span class="arr">&rarr;</span></a>
+      <a href="mailto:hello@thedesigngym.com?subject=Partner%20Advisory%20Council" class="btn">Request an invitation <span class="arr">&rarr;</span></a>
     </div>
   </div>
 </section>
