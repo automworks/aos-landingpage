@@ -333,14 +333,14 @@ h1 .hl::after{
 /* use cases by industry */
 .usecases{max-width:1080px;margin:3.6rem auto 0;padding:0 6vw;text-align:left;}
 .usecases .uc-eyebrow{display:block;text-align:center;margin-bottom:1.3rem;}
-.uc-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:1.4rem;}
+.uc-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:1.6rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(246,242,234,.1);}
 .uc-tab{
   font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--ink-soft);background:transparent;border:1px solid var(--line-strong);border-radius:var(--radius-pill);
+  color:rgba(246,242,234,.6);background:transparent;border:1px solid rgba(246,242,234,.2);border-radius:var(--radius-pill);
   padding:.55rem 1.1rem;cursor:pointer;transition:background .2s ease,color .2s ease,border-color .2s ease;
 }
-.uc-tab:hover{border-color:var(--ink);color:var(--ink);}
-.uc-tab.active{background:var(--ink);border-color:var(--ink);color:var(--paper);}
+.uc-tab:hover{border-color:rgba(246,242,234,.55);color:var(--paper);}
+.uc-tab.active{background:var(--amber);border-color:var(--amber);color:var(--ink);}
 .uc-deck{
   background:radial-gradient(120% 140% at 100% 0%, rgba(255,205,0,.10), transparent 55%),var(--noir);
   border:1px solid rgba(246,242,234,.14);border-radius:var(--radius-md);padding:1.6rem;
@@ -727,13 +727,13 @@ footer .flinks{display:flex;gap:1.8rem;}
   </figure>
   <div class="usecases reveal" data-d="2">
     <span class="mono uc-eyebrow">Use cases by industry</span>
-    <div class="uc-tabs" role="tablist" aria-label="Use cases by industry">
-      <button class="uc-tab active" data-uc="tech" role="tab" aria-selected="true">Technology</button>
-      <button class="uc-tab" data-uc="ins" role="tab" aria-selected="false">Insurance</button>
-      <button class="uc-tab" data-uc="fin" role="tab" aria-selected="false">Financial Services</button>
-      <button class="uc-tab" data-uc="health" role="tab" aria-selected="false">Healthcare</button>
-    </div>
     <div class="uc-deck">
+      <div class="uc-tabs" role="tablist" aria-label="Use cases by industry">
+        <button class="uc-tab active" data-uc="tech" role="tab" aria-selected="true">Technology</button>
+        <button class="uc-tab" data-uc="ins" role="tab" aria-selected="false">Insurance</button>
+        <button class="uc-tab" data-uc="fin" role="tab" aria-selected="false">Financial Services</button>
+        <button class="uc-tab" data-uc="health" role="tab" aria-selected="false">Healthcare</button>
+      </div>
       <div class="uc-panel active" data-uc="tech" role="tabpanel">
         <div class="uc-item">
           <span class="ic" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l10 5 10-5"/><path d="M4 14l10 5 10-5"/><path d="M4 19l10 5 10-5"/><circle cx="14" cy="4.5" r="1.9" fill="var(--amber)" stroke="none"/></svg></span>
