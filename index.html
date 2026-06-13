@@ -238,17 +238,6 @@ h1 .hl::after{
 .flow.up .dash{animation:flowup .8s linear infinite;}
 @keyframes flowdown{to{stroke-dashoffset:-13}}
 @keyframes flowup{to{stroke-dashoffset:13}}
-/* information packets travelling along the flow */
-.flow .packet{
-  position:absolute;left:50%;width:7px;height:7px;border-radius:50%;
-  transform:translateX(-50%);opacity:0;will-change:top,opacity;
-}
-.flow.down .packet{background:#8C8472;box-shadow:0 0 6px rgba(140,132,114,.5);animation:pkt-down 1s linear infinite;}
-.flow.up .packet{background:var(--amber-deep);box-shadow:0 0 6px rgba(201,148,0,.55);animation:pkt-up 1s linear infinite;}
-.flow .packet:nth-child(4){animation-delay:.33s;}
-.flow .packet:nth-child(5){animation-delay:.66s;}
-@keyframes pkt-down{0%{top:2%;opacity:0;}12%{opacity:1;}88%{opacity:1;}100%{top:93%;opacity:0;}}
-@keyframes pkt-up{0%{top:93%;opacity:0;}12%{opacity:1;}88%{opacity:1;}100%{top:2%;opacity:0;}}
 .flow-label{
   position:absolute;font-family:var(--font-mono);font-size:1.16rem;letter-spacing:.12em;text-transform:uppercase;
   writing-mode:vertical-rl;white-space:nowrap;
@@ -669,7 +658,6 @@ footer .flinks{display:flex;gap:1.8rem;}
             <line class="dash" x1="9" y1="6" x2="9" y2="300" stroke="#8C8472" stroke-width="1.6"/>
             <path d="M3 300 L9 306 L15 300" stroke="#8C8472" stroke-width="1.6" fill="none"/>
           </svg>
-          <span class="packet"></span><span class="packet"></span><span class="packet"></span>
         </div>
         <div class="iso">
           <div class="plate" data-l="1" style="--i:0"><span>Strategy &amp; Outcomes</span><span class="idx">L1</span></div>
@@ -684,7 +672,6 @@ footer .flinks{display:flex;gap:1.8rem;}
             <line class="dash" x1="9" y1="20" x2="9" y2="314" stroke="#C99400" stroke-width="1.6"/>
             <path d="M3 20 L9 14 L15 20" stroke="#C99400" stroke-width="1.6" fill="none"/>
           </svg>
-          <span class="packet"></span><span class="packet"></span><span class="packet"></span>
         </div>
       </div>
     </div>
