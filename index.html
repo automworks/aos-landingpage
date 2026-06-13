@@ -71,6 +71,13 @@ nav.scrolled{
   box-shadow:0 1px 0 var(--line);
   padding:.8rem 6vw;
 }
+/* dark mode: nav adapts when it overlaps a dark section */
+nav .logo,nav .nav-by,nav .nav-links a{transition:color .35s ease;}
+nav.dark.scrolled{background:rgba(12,10,6,.72);box-shadow:0 1px 0 rgba(246,242,234,.09);}
+nav.dark .logo{color:var(--paper);}
+nav.dark .nav-by{color:rgba(246,242,234,.5);}
+nav.dark .nav-links a{color:rgba(246,242,234,.72);}
+nav.dark .nav-links a:hover{color:var(--paper);}
 .nav-left{display:flex;align-items:baseline;gap:.9rem;}
 .nav-by{font-size:.6rem;letter-spacing:.12em;}
 .logo{display:flex;align-items:baseline;text-decoration:none;color:var(--ink);}
@@ -426,30 +433,29 @@ h1 .hl::after{
 .events-head{margin-bottom:2.8rem;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
 .events-head h2{font-size:clamp(1.9rem,3.2vw,2.7rem);font-weight:700;letter-spacing:-.03em;margin-top:.8rem;}
 .events-head p{max-width:26rem;color:var(--ink-soft);}
-.event-panel{
-  background:radial-gradient(120% 140% at 100% 0%, rgba(255,205,0,.08), transparent 55%),var(--noir);
-  border:1px solid rgba(246,242,234,.14);border-radius:8px;padding:.6rem 2.4rem;
-}
+.event-list{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
 .event{
-  display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:2rem;align-items:center;
-  padding:1.7rem 0;border-bottom:1px dashed rgba(246,242,234,.16);
+  background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius);
+  padding:2rem 1.8rem;display:flex;flex-direction:column;gap:1rem;cursor:pointer;
+  transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .3s;
 }
-.event:last-child{border-bottom:none;}
-.echip{
-  width:74px;height:74px;border-radius:12px;flex:none;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:rgba(246,242,234,.05);border:1px solid rgba(246,242,234,.14);
-}
-.echip b{font-size:1.8rem;font-weight:700;line-height:1;color:var(--amber);}
-.echip span{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(246,242,234,.55);margin-top:.2rem;}
-.event h3{color:var(--paper);font-size:1.15rem;font-weight:700;letter-spacing:-.015em;margin-bottom:.25rem;}
-.event p{color:rgba(246,242,234,.6);font-size:.9rem;max-width:34rem;}
+.event:hover{transform:translateY(-5px);box-shadow:0 24px 48px -24px rgba(24,20,16,.2);border-color:var(--line-strong);}
+.edate{display:flex;flex-direction:column;align-items:flex-start;gap:.45rem;}
+.cal{width:60px;border:1px solid var(--line-strong);border-radius:7px;overflow:hidden;text-align:center;background:var(--paper);}
+.cal .mo{background:var(--ink);color:var(--paper);font-family:var(--font-mono);font-size:.55rem;letter-spacing:.14em;padding:.28rem 0;text-transform:uppercase;}
+.cal .dy{font-size:1.7rem;font-weight:700;padding:.22rem 0 .34rem;line-height:1;color:var(--ink);}
+.edate .yr{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;color:var(--ink-faint);}
+.event h3{font-size:1.1rem;font-weight:700;letter-spacing:-.015em;line-height:1.32;color:var(--ink);}
+.event p{font-size:.92rem;color:var(--ink-soft);line-height:1.6;}
+.efoot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-top:.5rem;}
 .etag{
   font-family:var(--font-mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;
-  color:rgba(246,242,234,.55);border:1px solid rgba(246,242,234,.2);border-radius:999px;padding:.35rem .85rem;white-space:nowrap;
+  color:var(--ink-faint);border:1px solid var(--line-strong);border-radius:999px;padding:.32rem .8rem;white-space:nowrap;
 }
-.event .btn{background:transparent;color:var(--paper);border-color:rgba(246,242,234,.35);}
-.event .btn:hover{background:var(--amber);border-color:var(--amber);color:var(--ink);transform:translateY(-2px);}
+.ereg{font-weight:600;font-size:.9rem;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:.35rem;white-space:nowrap;}
+.ereg .arr{transition:transform .2s ease;}
+.ereg:hover{color:var(--amber-deep);}
+.ereg:hover .arr{transform:translateX(3px);}
 
 /* ===== CTA ===== */
 .cta{
@@ -497,11 +503,7 @@ footer .flinks{display:flex;gap:1.8rem;}
 @media (max-width:920px){
   .problem .wrap,.cta .wrap,.assess .wrap{grid-template-columns:1fr;}
   .tgrid{grid-template-columns:1fr;}
-  .event{grid-template-columns:auto minmax(0,1fr);gap:1rem 1.2rem;align-items:start;}
-  .event .etag,.event .btn{grid-column:2;justify-self:start;}
-  .event-panel{padding:.3rem 1.4rem;}
-  .echip{width:58px;height:58px;}
-  .echip b{font-size:1.4rem;}
+  .event-list{grid-template-columns:1fr;}
   .logo-row{justify-content:flex-start;}
   .hero-scrolly{height:760vh;}
   .hero-stage{grid-template-columns:1fr;gap:0;align-content:center;padding-top:5.5rem;}
@@ -820,39 +822,39 @@ footer .flinks{display:flex;gap:1.8rem;}
       </div>
       <p>Live sessions with The Design Gym team. Bring your questions and your messiest workflow.</p>
     </div>
-    <div class="event-panel">
+    <div class="event-list">
       <div class="event reveal">
-        <div class="echip"><b>25</b><span>Jun</span></div>
-        <div>
-          <h3>Diagnose your operating system in 45 minutes</h3>
-          <p>A live walkthrough of the readiness test, with anonymized profiles from real teams and what they did next.</p>
+        <div class="edate"><div class="cal"><div class="mo">Jun</div><div class="dy">25</div></div><span class="yr">2026</span></div>
+        <h3>Diagnose your operating system in 45 minutes</h3>
+        <p>A live walkthrough of the readiness test, with anonymized profiles from real teams and what they did next.</p>
+        <div class="efoot">
+          <span class="etag">Webinar &middot; 45 min</span>
+          <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Diagnose%20your%20OS%20(Jun%2025)" class="ereg">Register <span class="arr">&rarr;</span></a>
         </div>
-        <span class="etag">45 min</span>
-        <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Diagnose%20your%20OS%20(Jun%2025)" class="btn">Register <span class="arr">&rarr;</span></a>
       </div>
       <div class="event reveal" data-d="1">
-        <div class="echip"><b>16</b><span>Jul</span></div>
-        <div>
-          <h3>Designing workflows for human + agent teams</h3>
-          <p>How to redesign one real workflow so people and AI agents share context, ownership, and a feedback loop.</p>
+        <div class="edate"><div class="cal"><div class="mo">Jul</div><div class="dy">16</div></div><span class="yr">2026</span></div>
+        <h3>Designing workflows for human + agent teams</h3>
+        <p>How to redesign one real workflow so people and AI agents share context, ownership, and a feedback loop.</p>
+        <div class="efoot">
+          <span class="etag">Webinar &middot; 60 min</span>
+          <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Human%20%2B%20agent%20workflows%20(Jul%2016)" class="ereg">Register <span class="arr">&rarr;</span></a>
         </div>
-        <span class="etag">60 min</span>
-        <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Human%20%2B%20agent%20workflows%20(Jul%2016)" class="btn">Register <span class="arr">&rarr;</span></a>
       </div>
       <div class="event reveal" data-d="2">
-        <div class="echip"><b>6</b><span>Aug</span></div>
-        <div>
-          <h3>Cascading strategy without the slideware</h3>
-          <p>Turning executive intent into team backlogs that still mean something by the time they ship.</p>
+        <div class="edate"><div class="cal"><div class="mo">Aug</div><div class="dy">6</div></div><span class="yr">2026</span></div>
+        <h3>Cascading strategy without the slideware</h3>
+        <p>Turning executive intent into team backlogs that still mean something by the time they ship.</p>
+        <div class="efoot">
+          <span class="etag">Webinar &middot; 45 min</span>
+          <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Cascading%20strategy%20(Aug%206)" class="ereg">Register <span class="arr">&rarr;</span></a>
         </div>
-        <span class="etag">45 min</span>
-        <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Cascading%20strategy%20(Aug%206)" class="btn">Register <span class="arr">&rarr;</span></a>
       </div>
     </div>
   </div>
 </section>
 
-<section class="cta" id="cta">
+<section class="cta" id="cta" data-nav="dark">
   <div class="wrap">
     <div class="reveal">
       <span class="mono">07 / Get started</span>
@@ -869,7 +871,7 @@ footer .flinks{display:flex;gap:1.8rem;}
   </div>
 </section>
 
-<footer>
+<footer data-nav="dark">
   <div class="wrap">
     <a class="logo" href="#top">
       <span class="logo-word">adaptive<b>OS</b></span><span class="logo-dot"></span>
@@ -885,9 +887,18 @@ footer .flinks{display:flex;gap:1.8rem;}
 </footer>
 
 <script>
-// nav scroll state
+// nav scroll state + dark-mode adaptation over dark sections
 const nav = document.getElementById('nav');
-addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 24), {passive:true});
+const darkSections = [...document.querySelectorAll('[data-nav="dark"]')];
+function onNavScroll(){
+  nav.classList.toggle('scrolled', scrollY > 24);
+  const line = 32; // nav vertical center
+  const overDark = darkSections.some(s => { const r = s.getBoundingClientRect(); return r.top <= line && r.bottom > line; });
+  nav.classList.toggle('dark', overDark);
+}
+addEventListener('scroll', onNavScroll, {passive:true});
+addEventListener('resize', onNavScroll);
+onNavScroll();
 
 // generic reveal-on-scroll
 const io = new IntersectionObserver(entries => {
