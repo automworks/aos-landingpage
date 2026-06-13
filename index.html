@@ -202,12 +202,6 @@ h1 .hl::after{
     opacity .55s ease, filter .55s ease, box-shadow .4s ease;
   will-change:transform;
 }
-/* dashed rings drift slowly on axis until they engage */
-@keyframes plate-drift{
-  from{transform:translateZ(var(--z)) rotate(0deg);}
-  to{transform:translateZ(var(--z)) rotate(360deg);}
-}
-.plate:not(.in){animation:plate-drift 42s linear infinite;}
 /* label left-aligned to the circle edge, across the widest span */
 .plate > span:first-child{
   position:absolute;top:50%;left:8%;width:84%;
