@@ -363,34 +363,59 @@ h1 .hl::after{
   .uc-panel.active{grid-template-columns:1fr;}
 }
 
-/* ===== BENEFITS ===== */
+/* ===== BENEFITS (bento) ===== */
 .benefits{padding:2rem 0 9rem;}
 .benefits-head{margin-bottom:3.6rem;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
 .benefits-head h2{font-size:clamp(1.9rem,3.2vw,2.7rem);font-weight:700;letter-spacing:-.03em;max-width:24rem;line-height:1.15;margin-top:.8rem;}
 .benefits-head p{max-width:24rem;color:var(--ink-soft);}
-.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
+.bgrid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(168px,auto);gap:1.1rem;}
 .bcard{
-  background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius);
-  padding:2rem 1.8rem 1.9rem;position:relative;overflow:hidden;cursor:pointer;
+  background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:1.5rem;position:relative;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;
   transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .3s;
 }
-.bcard:hover{transform:translateY(-6px);box-shadow:0 24px 48px -24px rgba(24,20,16,.22);border-color:var(--line-strong);}
-.bcard::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:3px;
-  background:var(--accent,var(--ink));transform:scaleX(0);transform-origin:left;
-  transition:transform .35s cubic-bezier(.2,.8,.2,1);
-}
-.bcard:hover::before{transform:scaleX(1);}
-.bcard .bicon{display:block;width:30px;height:30px;margin-bottom:1.4rem;color:var(--ink);transition:color .3s ease;}
-.bcard .bicon svg{width:100%;height:100%;display:block;}
-.bcard:hover .bicon{color:var(--accent,var(--ink));}
-.bcard h3{font-size:1.12rem;font-weight:700;letter-spacing:-.015em;line-height:1.35;margin-bottom:.6rem;}
-.bcard p{font-size:.93rem;color:var(--ink-soft);line-height:1.6;}
+.bcard:hover{transform:translateY(-5px);box-shadow:0 24px 48px -24px rgba(24,20,16,.22);border-color:var(--line-strong);}
+.b-big{grid-column:span 2;grid-row:span 2;}
+.b-wide{grid-column:span 2;}
+.bcard h3{font-size:1.05rem;font-weight:700;letter-spacing:-.015em;line-height:1.32;margin-bottom:.4rem;}
+.b-big h3{font-size:1.35rem;margin-bottom:.55rem;}
+.bcard p{font-size:.9rem;color:var(--ink-soft);line-height:1.55;}
+.b-big p{font-size:.98rem;max-width:30rem;}
 .bcard .tag{
-  display:inline-block;margin-top:1.3rem;
-  font-family:var(--font-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--ink-faint);border:1px solid var(--line);border-radius:var(--radius-pill);padding:.32rem .75rem;
+  display:inline-block;margin-top:.9rem;align-self:flex-start;
+  font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-faint);border:1px solid var(--line);border-radius:var(--radius-pill);padding:.3rem .7rem;
 }
+/* illustrative UI panel */
+.bvis{
+  flex:1;min-height:72px;margin-bottom:1.1rem;
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.9rem;display:flex;flex-direction:column;justify-content:center;gap:.5rem;overflow:hidden;position:relative;
+  transition:border-color .3s ease;
+}
+.bcard:hover .bvis{border-color:var(--line-strong);}
+/* UI atoms */
+.u-bar{height:6px;border-radius:3px;background:var(--line-strong);}
+.u-bar.am{background:var(--accent);}
+.u-row{display:flex;align-items:center;gap:.4rem;}
+.u-chip{font-family:var(--font-mono);font-size:.5rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);
+  border:1px solid var(--line-strong);border-radius:var(--radius-pill);padding:.14rem .42rem;background:var(--paper-raised);white-space:nowrap;}
+.u-card{background:var(--paper-raised);border:1px solid var(--line);border-radius:6px;padding:.6rem .65rem;}
+.u-dot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none;}
+.u-arrow{align-self:center;color:var(--ink-faint);font-size:.9rem;line-height:.5;}
+.u-step{display:flex;align-items:center;gap:.55rem;}
+.u-tile{width:30px;height:30px;border-radius:7px;background:var(--paper-raised);border:1px solid var(--line-strong);
+  display:grid;place-items:center;font-family:var(--font-mono);font-size:.74rem;font-weight:500;color:var(--ink-soft);}
+.u-tile.am{border-color:var(--accent);color:var(--accent);}
+.u-board{display:flex;gap:.5rem;}
+.u-col{flex:1;display:flex;flex-direction:column;gap:.34rem;}
+.u-tk{height:13px;border-radius:3px;background:var(--paper-raised);border:1px solid var(--line);}
+.u-tk.am{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent);}
+.u-node{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line-strong);display:grid;place-items:center;flex:none;}
+.u-node i{width:8px;height:8px;border-radius:50%;background:var(--ink-faint);display:block;}
+.u-node.am{border-color:var(--accent);}
+.u-node.am i{background:var(--accent);border-radius:2px;transform:rotate(45deg);}
+.u-cursor{position:absolute;color:var(--accent);font-size:.62rem;line-height:1;}
 
 /* ===== ASSESSMENT ===== */
 .assess{padding:8rem 0;background:var(--paper-raised);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
@@ -561,7 +586,9 @@ footer .flinks{display:flex;gap:1.8rem;}
   .panel h3{font-size:1.5rem;}
   .hero-progress{display:none;}
   .flow-label{display:none;}
-  .bgrid{grid-template-columns:1fr;}
+  .bgrid{grid-template-columns:1fr;grid-auto-rows:auto;}
+  .b-big,.b-wide{grid-column:auto;grid-row:auto;}
+  .bvis{min-height:120px;}
   .nav-links a:not(.btn){display:none;}
   .nav-left{flex-direction:column;align-items:flex-start;gap:.2rem;}
   /* tighter vertical rhythm */
@@ -817,38 +844,77 @@ footer .flinks{display:flex;gap:1.8rem;}
       <p>Adaptive OS is co-created with your teams, personalized to your industry and function, and built to outlast any single platform decision.</p>
     </div>
     <div class="bgrid">
-      <div class="bcard reveal" style="--accent:var(--l1)">
-        <span class="bicon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4v20"/><path d="M7.5 5h13l-3 4 3 4h-13"/></svg></span>
+      <div class="bcard b-big reveal" style="--accent:var(--l1)">
+        <div class="bvis">
+          <div class="u-card">
+            <div class="u-row" style="justify-content:space-between"><span class="u-chip">Team Charter</span><span class="u-dot"></span></div>
+            <div class="u-bar" style="width:82%;margin-top:.55rem"></div>
+            <div class="u-bar" style="width:62%;margin-top:.36rem"></div>
+            <div class="u-row" style="margin-top:.6rem"><span class="u-chip">Trust</span><span class="u-chip">Candor</span><span class="u-chip">Ship</span></div>
+          </div>
+          <span class="u-arrow">&darr;</span>
+          <div class="u-card">
+            <div class="u-row" style="justify-content:space-between"><span class="u-chip">System Prompt</span><span class="u-chip">os.md</span></div>
+            <div class="u-bar am" style="width:90%;margin-top:.55rem"></div>
+            <div class="u-bar" style="width:70%;margin-top:.36rem"></div>
+          </div>
+        </div>
         <h3>Culture before tool adoption</h3>
         <p>Your team's charter becomes the system prompt. Values and working agreements shape how every workflow and agent behaves.</p>
         <span class="tag">Team Charter as System Prompt</span>
       </div>
-      <div class="bcard reveal" data-d="1" style="--accent:var(--l2)">
-        <span class="bicon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7l9 5 9-5"/><path d="M5 13l9 5 9-5"/><path d="M5 19l9 5 9-5"/></svg></span>
+      <div class="bcard b-wide reveal" data-d="1" style="--accent:var(--l2)">
+        <div class="bvis">
+          <div class="u-step"><span class="u-chip">Exec</span><div class="u-bar" style="flex:1"></div></div>
+          <div class="u-step" style="padding-left:1.5rem"><span class="u-chip">Team</span><div class="u-bar" style="flex:1"></div></div>
+          <div class="u-step" style="padding-left:3rem"><span class="u-chip">Backlog</span><div class="u-bar am" style="flex:1"></div></div>
+        </div>
         <h3>Alignment for leadership and operators</h3>
         <p>Strategy cascades from the executive view to the team backlog without losing meaning along the way.</p>
-        <span class="tag">Cascading Strategy Approach</span>
+        <span class="tag">Cascading Strategy</span>
       </div>
       <div class="bcard reveal" data-d="2" style="--accent:var(--l3)">
-        <span class="bicon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="14" r="6.5"/><circle cx="17.5" cy="14" r="6.5"/></svg></span>
+        <div class="bvis">
+          <div class="u-card" style="position:relative">
+            <div class="u-bar" style="width:72%"></div>
+            <div class="u-bar" style="width:50%;margin-top:.36rem"></div>
+            <span class="u-cursor" style="right:.45rem;top:.3rem">&#9658;</span>
+            <span class="u-cursor" style="right:1.5rem;bottom:.3rem;color:var(--ink-faint)">&#9658;</span>
+          </div>
+        </div>
         <h3>Co-create the OS together</h3>
-        <p>A collaborative platform where teams build their own operating system, personalized to industry and function.</p>
-        <span class="tag">Personalized to Industry + Function</span>
+        <p>Teams build their own OS, personalized to industry and function.</p>
+        <span class="tag">Personalized</span>
       </div>
       <div class="bcard reveal" style="--accent:var(--l4)">
-        <span class="bicon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3l10 5.5-10 5.5L4 8.5 14 3z"/><path d="M4 14l10 5.5L24 14"/><path d="M4 19.5L14 25l10-5.5"/></svg></span>
+        <div class="bvis" style="align-items:center;justify-content:center">
+          <div class="u-row"><span class="u-tile">G</span><span class="u-tile">M</span><span class="u-tile am">+</span></div>
+        </div>
         <h3>Works across technology stacks</h3>
-        <p>Designed to run on what you already own. Google, Microsoft, and beyond, with no forced migration.</p>
+        <p>Runs on what you already own. No forced migration.</p>
         <span class="tag">Google / Microsoft / +</span>
       </div>
-      <div class="bcard reveal" data-d="1" style="--accent:var(--ink)">
-        <span class="bicon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 14a9 9 0 1 1-2.6-6.3"/><path d="M21 3.5V9h-5.5"/></svg></span>
+      <div class="bcard b-wide reveal" data-d="1" style="--accent:var(--ink)">
+        <div class="bvis">
+          <div class="u-board">
+            <div class="u-col"><span class="u-chip">Backlog</span><div class="u-tk"></div><div class="u-tk"></div></div>
+            <div class="u-col"><span class="u-chip">In cycle</span><div class="u-tk am"></div><div class="u-tk"></div></div>
+            <div class="u-col"><span class="u-chip">Shipped</span><div class="u-tk"></div></div>
+          </div>
+        </div>
         <h3>Bring your own methodology</h3>
         <p>Cycle-based delivery that wraps around SAFe, Scrum, or your house style instead of replacing it.</p>
         <span class="tag">SAFe / Scrum / +</span>
       </div>
-      <div class="bcard reveal" data-d="2" style="--accent:var(--amber)">
-        <span class="bicon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="8.5" r="2.6"/><circle cx="21" cy="8.5" r="2.6"/><circle cx="14" cy="20.5" r="2.6"/><path d="M9.2 10l3.6 8.2M18.8 10l-3.6 8.2M9.4 8.5h9.2"/></svg></span>
+      <div class="bcard b-wide reveal" data-d="2" style="--accent:var(--amber)">
+        <div class="bvis">
+          <div class="u-row" style="justify-content:center;gap:1.6rem">
+            <span class="u-node"><i></i></span>
+            <span class="u-node am"><i></i></span>
+          </div>
+          <div class="u-bar am" style="margin-top:.5rem"></div>
+          <div style="text-align:center;margin-top:.1rem"><span class="u-chip">Shared context layer</span></div>
+        </div>
         <h3>Workflows for human + agentic teams</h3>
         <p>Redesign how work flows when half your teammates are AI agents, grounded in a shared context layer.</p>
         <span class="tag">OS Context Layer</span>
