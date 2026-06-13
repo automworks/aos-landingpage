@@ -202,21 +202,6 @@ h1 .hl::after{
     opacity .55s ease, filter .55s ease, box-shadow .4s ease;
   will-change:transform;
 }
-.plate[data-l="1"]{--lc:var(--l1);}
-.plate[data-l="2"]{--lc:var(--l2);}
-.plate[data-l="3"]{--lc:var(--l3);}
-.plate[data-l="4"]{--lc:var(--l4);}
-.plate[data-l="5"]{--lc:var(--l5);}
-/* hover spotlight: reveal each dashed ring in its layer colour near the cursor */
-.plate::after{
-  content:"";position:absolute;inset:0;box-sizing:border-box;border-radius:50%;
-  border:1.5px dashed var(--lc,var(--line-strong));pointer-events:none;
-  opacity:0;transition:opacity .3s ease;
-  -webkit-mask:radial-gradient(circle 70px at var(--mx,-999px) var(--my,-999px), #000 32%, transparent 72%);
-  mask:radial-gradient(circle 70px at var(--mx,-999px) var(--my,-999px), #000 32%, transparent 72%);
-}
-.iso.hovering .plate:not(.in)::after{opacity:1;}
-@media (hover:none){.plate::after{display:none;}}
 /* label left-aligned to the circle edge, across the widest span */
 .plate > span:first-child{
   position:absolute;top:50%;left:8%;width:84%;
@@ -1077,44 +1062,6 @@ function onScroll(){
 addEventListener('scroll', onScroll, {passive:true});
 addEventListener('resize', onScroll);
 onScroll();
-
-// hover spotlight: reveal the dashed layer rings in colour near the cursor.
-// the rings live in a 3D-rotated plane; measure the plane's transform with probe
-// points (rather than modelling it) and invert it to map cursor -> ring-local space.
-const isoEl = document.querySelector('.iso');
-const isoScene = document.getElementById('isoScene');
-if (isoEl && isoScene && matchMedia('(hover:hover)').matches) {
-  let inv = null;
-  function screenOf(lx, ly) {
-    // probe inside a dashed plate so the measured transform includes the plate's
-    // own rotation (its frame is where the mask coordinates live)
-    const parent = isoEl.querySelector('.plate:not(.in)') || isoEl.querySelector('.plate');
-    const p = document.createElement('div');
-    p.style.cssText = 'position:absolute;left:' + lx + 'px;top:' + ly + 'px;width:0;height:0;';
-    parent.appendChild(p);
-    const r = p.getBoundingClientRect();
-    parent.removeChild(p);
-    return { x: r.left, y: r.top };
-  }
-  function calibrate() {
-    const S = 100, o = screenOf(0, 0), px = screenOf(S, 0), py = screenOf(0, S);
-    const a = (px.x - o.x) / S, b = (px.y - o.y) / S, c = (py.x - o.x) / S, d = (py.y - o.y) / S;
-    const det = a * d - b * c;
-    inv = det ? { a: d / det, b: -b / det, c: -c / det, d: a / det, ox: o.x, oy: o.y } : null;
-  }
-  calibrate();
-  addEventListener('resize', () => { calibrate(); }, { passive: true });
-  addEventListener('scroll', () => { calibrate(); }, { passive: true });
-  isoScene.addEventListener('mousemove', e => {
-    if (!inv) calibrate();
-    if (!inv) return;
-    const sx = e.clientX - inv.ox, sy = e.clientY - inv.oy;
-    isoEl.style.setProperty('--mx', (inv.a * sx + inv.c * sy) + 'px');
-    isoEl.style.setProperty('--my', (inv.b * sx + inv.d * sy) + 'px');
-    isoEl.classList.add('hovering');
-  });
-  isoScene.addEventListener('mouseleave', () => isoEl.classList.remove('hovering'));
-}
 
 // industry use-case tabs
 document.querySelectorAll('.uc-tab').forEach(tab => {
