@@ -165,7 +165,7 @@ h1 .hl::after{
 .panel .body{color:var(--ink-soft);font-size:1.08rem;max-width:27rem;line-height:1.65;}
 .panel .q{font-style:italic;color:var(--ink);font-size:1.08rem;margin-top:.9rem;max-width:27rem;}
 
-/* --- isometric stack --- */
+/* --- stacked circles (isometric) --- */
 .iso-scene{
   position:relative;height:600px;
   display:flex;align-items:center;justify-content:center;
@@ -176,29 +176,36 @@ h1 .hl::after{
   transform-style:preserve-3d;
 }
 .plate{
-  position:absolute;inset:0;border-radius:4px;
-  display:flex;align-items:flex-end;
-  padding:1.1rem 1.2rem;
-  font-family:var(--font-mono);font-size:1.32rem;letter-spacing:.07em;line-height:1.25;text-transform:uppercase;font-weight:500;
+  position:absolute;inset:0;border-radius:50%;
   border:1.5px dashed var(--line-strong);
   background:transparent;color:transparent;
-  transform:translateZ(calc(var(--i) * -46px));
+  --z:calc(var(--i) * -46px);
+  --spin:var(--spin0,-150deg);
+  transform:translateZ(var(--z)) rotate(var(--spin));
   transition:
-    transform .7s cubic-bezier(.2,.8,.2,1),
+    transform .85s cubic-bezier(.2,.8,.2,1),
     background .55s ease, border-color .55s ease, color .55s ease,
     opacity .55s ease, box-shadow .4s ease;
   will-change:transform;
 }
-.plate > span:first-child{max-width:78%;}
-.plate .idx{position:absolute;top:.9rem;right:1rem;opacity:.65;font-weight:400;font-size:.95rem;}
-.plate.in{border-style:solid;}
+/* label left-aligned to the circle edge, across the widest span */
+.plate > span:first-child{
+  position:absolute;top:50%;left:8%;width:84%;
+  transform:translateY(-50%);text-align:left;
+  font-family:var(--font-mono);font-size:1.18rem;letter-spacing:.03em;line-height:1.12;text-transform:uppercase;font-weight:500;
+}
+.plate .idx{
+  position:absolute;left:8%;top:50%;transform:translateY(-50%) translateY(-1.4em);
+  font-weight:400;font-size:.8rem;opacity:.6;
+}
+.plate.in{border-style:solid;--spin:0deg;}
 .plate.in[data-l="1"]{background:var(--l1);border-color:var(--l1);color:#F6F2EA;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
 .plate.in[data-l="2"]{background:var(--l2);border-color:var(--l2);color:var(--ink);box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
 .plate.in[data-l="3"]{background:var(--l3);border-color:var(--l3);color:#0B2B25;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
 .plate.in[data-l="4"]{background:var(--l4);border-color:var(--l4);color:#FDF3F8;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
 .plate.in[data-l="5"]{background:var(--l5);border-color:var(--l5);color:#F6F2EA;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.12);}
 .plate.focus{box-shadow:-18px 18px 0 -4px rgba(24,20,16,.16);}
-.plate.in.lift{transform:translateZ(calc(var(--i) * -46px + 92px));opacity:.55;}
+.plate.in.lift{--z:calc(var(--i) * -46px + 92px);opacity:.55;}
 /* signal flows, screen space */
 .flow{
   position:absolute;top:14%;bottom:14%;width:18px;opacity:0;transition:opacity .8s ease .15s;
@@ -473,9 +480,10 @@ footer .flinks{display:flex;gap:1.8rem;}
   .hero-stage{grid-template-columns:1fr;gap:0;align-content:center;padding-top:5.5rem;}
   .hero-copy{min-height:430px;order:2;}
   .iso-scene{height:300px;order:1;}
-  .iso{width:min(220px,56vw);transform:translateY(-40px) rotateX(57deg) rotateZ(-45deg);}
-  .plate{transform:translateZ(calc(var(--i) * -34px));padding:.7rem .8rem;font-size:1rem;}
-  .plate.in.lift{transform:translateZ(calc(var(--i) * -34px + 64px));}
+  .iso{width:min(230px,60vw);transform:translateY(-40px) rotateX(57deg) rotateZ(-45deg);}
+  .plate{--z:calc(var(--i) * -34px);}
+  .plate.in.lift{--z:calc(var(--i) * -34px + 64px);}
+  .plate > span:first-child{font-size:.92rem;}
   h1{font-size:clamp(2rem,8vw,2.6rem);}
   .panel h3{font-size:1.5rem;}
   .hero-progress{display:none;}
@@ -569,11 +577,11 @@ footer .flinks{display:flex;gap:1.8rem;}
           </svg>
         </div>
         <div class="iso">
-          <div class="plate" data-l="1" style="--i:0"><span>Strategy &amp; Outcomes</span><span class="idx">L1</span></div>
-          <div class="plate" data-l="2" style="--i:1"><span>People &amp; Agents</span><span class="idx">L2</span></div>
-          <div class="plate" data-l="3" style="--i:2"><span>Process &amp; Workflows</span><span class="idx">L3</span></div>
-          <div class="plate" data-l="4" style="--i:3"><span>Platforms &amp; Tools</span><span class="idx">L4</span></div>
-          <div class="plate" data-l="5" style="--i:4"><span>Data &amp; Context</span><span class="idx">L5</span></div>
+          <div class="plate" data-l="1" style="--i:0;--spin0:-150deg"><span>Strategy &amp; Outcomes</span><span class="idx">L1</span></div>
+          <div class="plate" data-l="2" style="--i:1;--spin0:165deg"><span>People &amp; Agents</span><span class="idx">L2</span></div>
+          <div class="plate" data-l="3" style="--i:2;--spin0:-170deg"><span>Process &amp; Workflows</span><span class="idx">L3</span></div>
+          <div class="plate" data-l="4" style="--i:3;--spin0:155deg"><span>Platforms &amp; Tools</span><span class="idx">L4</span></div>
+          <div class="plate" data-l="5" style="--i:4;--spin0:-160deg"><span>Data &amp; Context</span><span class="idx">L5</span></div>
         </div>
         <div class="flow up" id="flowUp">
           <span class="flow-label">Signal flows up</span>
