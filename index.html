@@ -34,7 +34,7 @@
   --font-mono:'IBM Plex Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;background:var(--noir);overscroll-behavior-y:none;}
 body{
   background:var(--paper);
   color:var(--ink);
@@ -78,6 +78,7 @@ nav.dark .logo{color:var(--paper);}
 nav.dark .nav-by{color:rgba(246,242,234,.5);}
 nav.dark .nav-links a{color:rgba(246,242,234,.72);}
 nav.dark .nav-links a:hover{color:var(--paper);}
+nav.dark .nav-links .btn{color:var(--ink);}
 .nav-left{display:flex;align-items:baseline;gap:.9rem;}
 .nav-by{font-size:.6rem;letter-spacing:.12em;}
 .logo{display:flex;align-items:baseline;text-decoration:none;color:var(--ink);}
