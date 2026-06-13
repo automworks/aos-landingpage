@@ -330,7 +330,9 @@ h1 .hl::after{
   transition:transform .35s cubic-bezier(.2,.8,.2,1);
 }
 .bcard:hover::before{transform:scaleX(1);}
-.bcard .mono{display:block;margin-bottom:1.5rem;}
+.bcard .bicon{display:block;width:30px;height:30px;margin-bottom:1.4rem;color:var(--ink);transition:color .3s ease;}
+.bcard .bicon svg{width:100%;height:100%;display:block;}
+.bcard:hover .bicon{color:var(--accent,var(--ink));}
 .bcard h3{font-size:1.12rem;font-weight:700;letter-spacing:-.015em;line-height:1.35;margin-bottom:.6rem;}
 .bcard p{font-size:.93rem;color:var(--ink-soft);line-height:1.6;}
 .bcard .tag{
@@ -406,7 +408,6 @@ h1 .hl::after{
     radial-gradient(130% 150% at 100% 0%, rgba(255,205,0,.11), transparent 55%),
     var(--noir);
   border:1px solid rgba(246,242,234,.14);
-  box-shadow:-16px 16px 0 -4px rgba(24,20,16,.12);
 }
 .advisory .eyebrow{
   display:inline-flex;align-items:center;gap:.5rem;margin-bottom:.75rem;
@@ -681,37 +682,37 @@ footer .flinks{display:flex;gap:1.8rem;}
     </div>
     <div class="bgrid">
       <div class="bcard reveal" style="--accent:var(--l1)">
-        <span class="mono">B.01</span>
+        <span class="bicon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4C8 4 8.5 11 5 14c3.5 3 3 10 6 10"/><path d="M17 4c3 0 2.5 7 6 10-3.5 3-3 10-6 10"/><circle cx="14" cy="14" r="1.5" fill="currentColor" stroke="none"/></svg></span>
         <h3>Culture before tool adoption</h3>
         <p>Your team's charter becomes the system prompt. Values and working agreements shape how every workflow and agent behaves.</p>
         <span class="tag">Team Charter as System Prompt</span>
       </div>
       <div class="bcard reveal" data-d="1" style="--accent:var(--l2)">
-        <span class="mono">B.02</span>
+        <span class="bicon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7l9 5 9-5"/><path d="M5 13l9 5 9-5"/><path d="M5 19l9 5 9-5"/></svg></span>
         <h3>Alignment for leadership and operators</h3>
         <p>Strategy cascades from the executive view to the team backlog without losing meaning along the way.</p>
         <span class="tag">Cascading Strategy Approach</span>
       </div>
       <div class="bcard reveal" data-d="2" style="--accent:var(--l3)">
-        <span class="mono">B.03</span>
+        <span class="bicon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="14" r="6.5"/><circle cx="17.5" cy="14" r="6.5"/></svg></span>
         <h3>Co-create the OS together</h3>
         <p>A collaborative platform where teams build their own operating system, personalized to industry and function.</p>
         <span class="tag">Personalized to Industry + Function</span>
       </div>
       <div class="bcard reveal" style="--accent:var(--l4)">
-        <span class="mono">B.04</span>
+        <span class="bicon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3l10 5.5-10 5.5L4 8.5 14 3z"/><path d="M4 14l10 5.5L24 14"/><path d="M4 19.5L14 25l10-5.5"/></svg></span>
         <h3>Works across technology stacks</h3>
         <p>Designed to run on what you already own. Google, Microsoft, and beyond, with no forced migration.</p>
         <span class="tag">Google / Microsoft / +</span>
       </div>
       <div class="bcard reveal" data-d="1" style="--accent:var(--ink)">
-        <span class="mono">B.05</span>
+        <span class="bicon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 14a9 9 0 1 1-2.6-6.3"/><path d="M21 3.5V9h-5.5"/></svg></span>
         <h3>Bring your own methodology</h3>
         <p>Cycle-based delivery that wraps around SAFe, Scrum, or your house style instead of replacing it.</p>
         <span class="tag">SAFe / Scrum / +</span>
       </div>
       <div class="bcard reveal" data-d="2" style="--accent:var(--amber)">
-        <span class="mono">B.06</span>
+        <span class="bicon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="8.5" r="2.6"/><circle cx="21" cy="8.5" r="2.6"/><circle cx="14" cy="20.5" r="2.6"/><path d="M9.2 10l3.6 8.2M18.8 10l-3.6 8.2M9.4 8.5h9.2"/></svg></span>
         <h3>Workflows for human + agentic teams</h3>
         <p>Redesign how work flows when half your teammates are AI agents, grounded in a shared context layer.</p>
         <span class="tag">OS Context Layer</span>
