@@ -86,7 +86,7 @@ nav.scrolled{
 }
 .nav-links a:hover{color:var(--ink);}
 .btn{
-  display:inline-flex;align-items:center;gap:.55rem;
+  display:inline-flex;align-items:center;gap:.55rem;white-space:nowrap;
   background:var(--ink);color:var(--paper);
   font-family:var(--font-display);font-weight:600;font-size:.92rem;
   padding:.78rem 1.5rem;border-radius:999px;text-decoration:none;
@@ -299,11 +299,6 @@ h1 .hl::after{
   background:var(--paper-raised);
   box-shadow:-18px 18px 0 -4px rgba(24,20,16,.10);
 }
-.loop-media figcaption{
-  margin-top:1rem;text-align:right;
-}
-.loop-media figcaption a{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid var(--line-strong);}
-.loop-media figcaption a:hover{color:var(--ink);border-color:var(--ink);}
 @media (max-width:920px){
   .loop-media{margin-top:2.6rem;}
   .loop-media img{box-shadow:-12px 12px 0 -4px rgba(24,20,16,.10);}
@@ -487,6 +482,7 @@ footer .flinks{display:flex;gap:1.8rem;}
   .flow-label{display:none;}
   .bgrid{grid-template-columns:1fr;}
   .nav-links a:not(.btn){display:none;}
+  .nav-left{flex-direction:column;align-items:flex-start;gap:.2rem;}
 }
 </style>
 </head>
@@ -631,7 +627,6 @@ footer .flinks{display:flex;gap:1.8rem;}
       width="1470"
       height="980"
     />
-    <figcaption class="mono">Photo via <a href="https://unsplash.com/photos/man-in-blue-long-sleeve-shirt-holding-smartphone-v89zhr0iBFY" target="_blank" rel="noopener noreferrer">Unsplash</a></figcaption>
   </figure>
 </section>
 
