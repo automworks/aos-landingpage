@@ -71,6 +71,13 @@ nav.scrolled{
   box-shadow:0 1px 0 var(--line);
   padding:.8rem 6vw;
 }
+/* dark mode: nav adapts when it overlaps a dark section */
+nav .logo,nav .nav-by,nav .nav-links a{transition:color .35s ease;}
+nav.dark.scrolled{background:rgba(12,10,6,.72);box-shadow:0 1px 0 rgba(246,242,234,.09);}
+nav.dark .logo{color:var(--paper);}
+nav.dark .nav-by{color:rgba(246,242,234,.5);}
+nav.dark .nav-links a{color:rgba(246,242,234,.72);}
+nav.dark .nav-links a:hover{color:var(--paper);}
 .nav-left{display:flex;align-items:baseline;gap:.9rem;}
 .nav-by{font-size:.6rem;letter-spacing:.12em;}
 .logo{display:flex;align-items:baseline;text-decoration:none;color:var(--ink);}
@@ -852,7 +859,7 @@ footer .flinks{display:flex;gap:1.8rem;}
   </div>
 </section>
 
-<section class="cta" id="cta">
+<section class="cta" id="cta" data-nav="dark">
   <div class="wrap">
     <div class="reveal">
       <span class="mono">07 / Get started</span>
@@ -869,7 +876,7 @@ footer .flinks{display:flex;gap:1.8rem;}
   </div>
 </section>
 
-<footer>
+<footer data-nav="dark">
   <div class="wrap">
     <a class="logo" href="#top">
       <span class="logo-word">adaptive<b>OS</b></span><span class="logo-dot"></span>
@@ -885,9 +892,18 @@ footer .flinks{display:flex;gap:1.8rem;}
 </footer>
 
 <script>
-// nav scroll state
+// nav scroll state + dark-mode adaptation over dark sections
 const nav = document.getElementById('nav');
-addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 24), {passive:true});
+const darkSections = [...document.querySelectorAll('[data-nav="dark"]')];
+function onNavScroll(){
+  nav.classList.toggle('scrolled', scrollY > 24);
+  const line = 32; // nav vertical center
+  const overDark = darkSections.some(s => { const r = s.getBoundingClientRect(); return r.top <= line && r.bottom > line; });
+  nav.classList.toggle('dark', overDark);
+}
+addEventListener('scroll', onNavScroll, {passive:true});
+addEventListener('resize', onNavScroll);
+onNavScroll();
 
 // generic reveal-on-scroll
 const io = new IntersectionObserver(entries => {
