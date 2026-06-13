@@ -426,22 +426,30 @@ h1 .hl::after{
 .events-head{margin-bottom:2.8rem;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
 .events-head h2{font-size:clamp(1.9rem,3.2vw,2.7rem);font-weight:700;letter-spacing:-.03em;margin-top:.8rem;}
 .events-head p{max-width:26rem;color:var(--ink-soft);}
-.event-list{border-top:1px solid var(--line);}
-.event{
-  display:grid;grid-template-columns:120px minmax(0,1fr) auto auto;gap:2.4rem;align-items:center;
-  padding:1.9rem .6rem;border-bottom:1px solid var(--line);cursor:pointer;
-  transition:background .25s ease;
+.event-panel{
+  background:radial-gradient(120% 140% at 100% 0%, rgba(255,205,0,.08), transparent 55%),var(--noir);
+  border:1px solid rgba(246,242,234,.14);border-radius:8px;padding:.6rem 2.4rem;
 }
-.event:hover{background:var(--paper-raised);}
-.edate{text-align:left;}
-.edate b{display:block;font-size:1.9rem;font-weight:700;letter-spacing:-.03em;line-height:1.05;}
-.edate .mono{font-size:.64rem;}
-.event h3{font-size:1.15rem;font-weight:700;letter-spacing:-.015em;margin-bottom:.25rem;}
-.event p{font-size:.92rem;color:var(--ink-soft);max-width:36rem;}
+.event{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:2rem;align-items:center;
+  padding:1.7rem 0;border-bottom:1px dashed rgba(246,242,234,.16);
+}
+.event:last-child{border-bottom:none;}
+.echip{
+  width:74px;height:74px;border-radius:12px;flex:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(246,242,234,.05);border:1px solid rgba(246,242,234,.14);
+}
+.echip b{font-size:1.8rem;font-weight:700;line-height:1;color:var(--amber);}
+.echip span{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(246,242,234,.55);margin-top:.2rem;}
+.event h3{color:var(--paper);font-size:1.15rem;font-weight:700;letter-spacing:-.015em;margin-bottom:.25rem;}
+.event p{color:rgba(246,242,234,.6);font-size:.9rem;max-width:34rem;}
 .etag{
   font-family:var(--font-mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--ink-faint);border:1px solid var(--line-strong);border-radius:999px;padding:.35rem .85rem;white-space:nowrap;
+  color:rgba(246,242,234,.55);border:1px solid rgba(246,242,234,.2);border-radius:999px;padding:.35rem .85rem;white-space:nowrap;
 }
+.event .btn{background:transparent;color:var(--paper);border-color:rgba(246,242,234,.35);}
+.event .btn:hover{background:var(--amber);border-color:var(--amber);color:var(--ink);transform:translateY(-2px);}
 
 /* ===== CTA ===== */
 .cta{
@@ -489,8 +497,11 @@ footer .flinks{display:flex;gap:1.8rem;}
 @media (max-width:920px){
   .problem .wrap,.cta .wrap,.assess .wrap{grid-template-columns:1fr;}
   .tgrid{grid-template-columns:1fr;}
-  .event{grid-template-columns:64px minmax(0,1fr);gap:1.2rem;}
+  .event{grid-template-columns:auto minmax(0,1fr);gap:1rem 1.2rem;}
   .event .etag,.event .btn{grid-column:2;justify-self:start;}
+  .event-panel{padding:.3rem 1.4rem;}
+  .echip{width:58px;height:58px;}
+  .echip b{font-size:1.4rem;}
   .logo-row{justify-content:flex-start;}
   .hero-scrolly{height:760vh;}
   .hero-stage{grid-template-columns:1fr;gap:0;align-content:center;padding-top:5.5rem;}
@@ -810,33 +821,33 @@ footer .flinks{display:flex;gap:1.8rem;}
       </div>
       <p>Live sessions with The Design Gym team. Bring your questions and your messiest workflow.</p>
     </div>
-    <div class="event-list">
+    <div class="event-panel">
       <div class="event reveal">
-        <div class="edate"><span class="mono">Jun 2026</span><b>25</b></div>
+        <div class="echip"><b>25</b><span>Jun</span></div>
         <div>
           <h3>Diagnose your operating system in 45 minutes</h3>
           <p>A live walkthrough of the readiness test, with anonymized profiles from real teams and what they did next.</p>
         </div>
-        <span class="etag">Webinar &middot; 45 min</span>
-        <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Diagnose%20your%20OS%20(Jun%2025)" class="btn ghost">Register</a>
+        <span class="etag">45 min</span>
+        <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Diagnose%20your%20OS%20(Jun%2025)" class="btn">Register <span class="arr">&rarr;</span></a>
       </div>
       <div class="event reveal" data-d="1">
-        <div class="edate"><span class="mono">Jul 2026</span><b>16</b></div>
+        <div class="echip"><b>16</b><span>Jul</span></div>
         <div>
           <h3>Designing workflows for human + agent teams</h3>
           <p>How to redesign one real workflow so people and AI agents share context, ownership, and a feedback loop.</p>
         </div>
-        <span class="etag">Webinar &middot; 60 min</span>
-        <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Human%20%2B%20agent%20workflows%20(Jul%2016)" class="btn ghost">Register</a>
+        <span class="etag">60 min</span>
+        <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Human%20%2B%20agent%20workflows%20(Jul%2016)" class="btn">Register <span class="arr">&rarr;</span></a>
       </div>
       <div class="event reveal" data-d="2">
-        <div class="edate"><span class="mono">Aug 2026</span><b>6</b></div>
+        <div class="echip"><b>6</b><span>Aug</span></div>
         <div>
           <h3>Cascading strategy without the slideware</h3>
           <p>Turning executive intent into team backlogs that still mean something by the time they ship.</p>
         </div>
-        <span class="etag">Webinar &middot; 45 min</span>
-        <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Cascading%20strategy%20(Aug%206)" class="btn ghost">Register</a>
+        <span class="etag">45 min</span>
+        <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Cascading%20strategy%20(Aug%206)" class="btn">Register <span class="arr">&rarr;</span></a>
       </div>
     </div>
   </div>
