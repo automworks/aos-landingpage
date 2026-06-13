@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Adaptive OS | A self-improving operating system for teams</title>
+<meta name="description" content="Adaptive OS installs the structures teams need for better collaboration and less friction. By The Design Gym." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://api.fontshare.com" />
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@300,400,401,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#F6F2EA;
+  --paper-raised:#FDFBF6;
+  --ink:#181410;
+  --ink-soft:#5C5546;
+  --ink-faint:#8C8472;
+  --line:#E2DACA;
+  --line-strong:#CFC5B0;
+  --amber:#FFCD00;
+  --amber-text:#E9B30B; /* darker amber reserved for text, better contrast */
+  --amber-deep:#C99400;
+  /* layer system colors, warmed */
+  --l1:#4A453D;
+  --l2:#FFCD00;
+  --l3:#17A38B;
+  --l4:#CE3B82;
+  --l5:#181410;
+  --radius:4px;
+  --font-display:'General Sans',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-display);
+  font-weight:400;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+/* subtle paper grain */
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  pointer-events:none;z-index:9999;
+  opacity:.35;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.018 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+::selection{background:var(--amber);color:var(--ink);}
+
+.mono{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 6vw;}
+
+/* ===== NAV ===== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 6vw;
+  transition:background .35s ease, box-shadow .35s ease, padding .35s ease;
+}
+nav.scrolled{
+  background:rgba(246,242,234,.88);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 1px 0 var(--line);
+  padding:.8rem 6vw;
+}
+.nav-left{display:flex;align-items:baseline;gap:.9rem;}
+.nav-by{font-size:.6rem;letter-spacing:.12em;}
+.logo{display:flex;align-items:baseline;text-decoration:none;color:var(--ink);}
+.logo-word{font-weight:300;font-size:1.22rem;letter-spacing:-.022em;line-height:1;}
+.logo-word b{font-weight:700;}
+.logo-dot{
+  width:.42em;height:.42em;border-radius:50%;background:var(--amber);
+  display:inline-block;margin-left:.18em;font-size:1.22rem;
+}
+.nav-links{display:flex;align-items:center;gap:2.2rem;}
+.nav-links a{
+  text-decoration:none;color:var(--ink-soft);font-size:.9rem;font-weight:500;
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--ink);}
+.btn{
+  display:inline-flex;align-items:center;gap:.55rem;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--font-display);font-weight:600;font-size:.92rem;
+  padding:.78rem 1.5rem;border-radius:999px;text-decoration:none;
+  border:1.5px solid var(--ink);
+  transition:transform .2s ease, background .2s ease, color .2s ease;
+}
+.btn:hover{transform:translateY(-2px);background:var(--amber);border-color:var(--amber);color:var(--ink);}
+.btn.ghost{background:transparent;color:var(--ink);}
+.btn.ghost:hover{background:var(--ink);color:var(--paper);}
+.btn .arr{transition:transform .2s ease;}
+.btn:hover .arr{transform:translateX(3px);}
+.nav-links .btn{background:var(--amber);border-color:var(--amber);color:var(--ink);}
+.nav-links .btn:hover{background:var(--ink);border-color:var(--ink);color:var(--paper);}
+
+/* ===== HERO SCROLLY (hero + architecture merged) ===== */
+.hero-scrolly{position:relative;height:680vh;}
+.hero-sticky{
+  position:sticky;top:0;height:100vh;overflow:hidden;
+  display:flex;align-items:center;
+}
+.hero-stage{
+  display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);
+  gap:3vw;align-items:center;
+  max-width:1340px;width:100%;margin:0 auto;padding:5rem 6vw 0;
+}
+.hero-copy{position:relative;min-height:580px;}
+.panel{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:center;
+  opacity:0;transform:translateY(26px);
+  transition:opacity .55s cubic-bezier(.2,.8,.2,1),transform .55s cubic-bezier(.2,.8,.2,1);
+  pointer-events:none;
+}
+.panel.active{opacity:1;transform:none;pointer-events:auto;}
+.kicker{display:inline-flex;align-items:center;gap:.6rem;margin-bottom:1.8rem;}
+.kicker-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);animation:pulse 2.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.5}}
+h1{
+  font-size:clamp(2.4rem,4.6vw,4rem);
+  font-weight:700;line-height:1.06;letter-spacing:-.035em;
+  margin-bottom:1.6rem;
+}
+h1 .thin{font-weight:300;}
+h1 .hl{position:relative;white-space:nowrap;}
+h1 .hl::after{
+  content:"";position:absolute;left:-.06em;right:-.06em;bottom:.04em;height:.34em;
+  background:var(--amber);z-index:-1;border-radius:2px;
+  transform:scaleX(0);transform-origin:left;
+  animation:sweep .7s .9s cubic-bezier(.2,.7,.2,1) forwards;
+}
+@keyframes sweep{to{transform:scaleX(1)}}
+.panel p.lede{
+  font-size:1.14rem;color:var(--ink-soft);max-width:32rem;line-height:1.65;
+  margin-bottom:2.2rem;
+}
+.hero-ctas{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;}
+.hero-note{margin-top:2.4rem;}
+.panel .num{
+  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.16em;margin-bottom:1.1rem;
+  display:flex;align-items:center;gap:.7rem;color:var(--ink-faint);text-transform:uppercase;
+}
+.panel .num i{width:28px;height:9px;border-radius:999px;display:inline-block;}
+.panel .num i.loop-dash{
+  background:linear-gradient(90deg,var(--l1),var(--l2),var(--l3),var(--l4),var(--l5));
+  background-size:200% 100%;
+  animation:loopShift 4s ease infinite;
+}
+@keyframes loopShift{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.panel h3{
+  font-size:clamp(1.7rem,2.8vw,2.5rem);font-weight:700;letter-spacing:-.028em;margin-bottom:1rem;line-height:1.12;
+}
+.panel .body{color:var(--ink-soft);font-size:1.08rem;max-width:27rem;line-height:1.65;}
+.panel .q{font-style:italic;color:var(--ink);font-size:1.08rem;margin-top:.9rem;max-width:27rem;}
+
+/* --- isometric stack --- */
+.iso-scene{
+  position:relative;height:600px;
+  display:flex;align-items:center;justify-content:center;
+}
+.iso{
+  position:relative;width:min(330px,30vw);aspect-ratio:1;
+  transform:translateY(-78px) rotateX(57deg) rotateZ(-45deg);
+  transform-style:preserve-3d;
+}
+.plate{
+  position:absolute;inset:0;border-radius:4px;
+  display:flex;align-items:flex-end;
+  padding:1.1rem 1.2rem;
+  font-family:var(--font-mono);font-size:1.32rem;letter-spacing:.07em;line-height:1.25;text-transform:uppercase;font-weight:500;
+  border:1.5px dashed var(--line-strong);
+  background:transparent;color:transparent;
+  transform:translateZ(calc(var(--i) * -46px));
+  transition:
+    transform .7s cubic-bezier(.2,.8,.2,1),
+    background .55s ease, border-color .55s ease, color .55s ease,
+    opacity .55s ease, box-shadow .4s ease;
+  will-change:transform;
+}
+.plate > span:first-child{max-width:78%;}
+.plate .idx{position:absolute;top:.9rem;right:1rem;opacity:.65;font-weight:400;font-size:.95rem;}
+.plate.in{border-style:solid;}
+.plate.in[data-l="1"]{background:var(--l1);border-color:var(--l1);color:#F6F2EA;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
+.plate.in[data-l="2"]{background:var(--l2);border-color:var(--l2);color:var(--ink);box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
+.plate.in[data-l="3"]{background:var(--l3);border-color:var(--l3);color:#0B2B25;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
+.plate.in[data-l="4"]{background:var(--l4);border-color:var(--l4);color:#FDF3F8;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
+.plate.in[data-l="5"]{background:var(--l5);border-color:var(--l5);color:#F6F2EA;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.12);}
+.plate.focus{box-shadow:-18px 18px 0 -4px rgba(24,20,16,.16);}
+.plate.in.lift{transform:translateZ(calc(var(--i) * -46px + 92px));opacity:.55;}
+/* signal flows, screen space */
+.flow{
+  position:absolute;top:14%;bottom:14%;width:18px;opacity:0;transition:opacity .8s ease .15s;
+}
+.flow.show{opacity:1;}
+.flow.down{left:4%;}
+.flow.up{right:4%;}
+.flow svg{height:100%;width:100%;}
+.flow .dash{stroke-dasharray:6 7;animation:flowdown 1.4s linear infinite;}
+.flow.up .dash{animation:flowup 1.4s linear infinite;}
+@keyframes flowdown{to{stroke-dashoffset:-13}}
+@keyframes flowup{to{stroke-dashoffset:13}}
+.flow-label{
+  position:absolute;font-family:var(--font-mono);font-size:1.16rem;letter-spacing:.12em;text-transform:uppercase;
+  writing-mode:vertical-rl;white-space:nowrap;
+}
+.flow.down .flow-label{left:-34px;top:50%;transform:translateY(-50%) rotate(180deg);color:var(--ink-faint);}
+.flow.up .flow-label{right:-34px;top:50%;transform:translateY(-50%);color:var(--amber-deep);}
+
+.hero-progress{
+  position:absolute;left:6vw;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:12px;
+  transition:opacity .5s ease;
+}
+.hero-progress b{
+  width:5px;height:22px;border-radius:2px;background:var(--line);
+  transition:background .3s;
+}
+.hero-progress b.on{background:var(--amber);}
+.hero-progress.hide{opacity:0;}
+
+.scroll-cue{
+  position:absolute;bottom:2.2rem;left:6vw;
+  display:flex;align-items:center;gap:.8rem;
+  color:var(--ink-faint);
+  transition:opacity .5s ease;
+}
+.scroll-cue.hide{opacity:0;}
+.scroll-cue .line{width:46px;height:1.5px;background:var(--line-strong);overflow:hidden;position:relative;}
+.scroll-cue .line::after{
+  content:"";position:absolute;inset:0;background:var(--ink);
+  animation:slide 1.8s ease-in-out infinite;
+}
+@keyframes slide{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
+
+/* ===== MARQUEE ===== */
+.marquee{
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:1.15rem 0;overflow:hidden;white-space:nowrap;
+  background:var(--paper-raised);
+}
+.marquee-track{display:inline-flex;gap:3.4rem;animation:marquee 36s linear infinite;}
+.marquee-track span{
+  font-family:var(--font-mono);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-faint);display:inline-flex;align-items:center;gap:3.4rem;
+}
+.marquee-track span::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--amber);display:inline-block;}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* ===== PROBLEM ===== */
+.problem{padding:9rem 0 8rem;}
+.problem .wrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:5rem;}
+.problem h2{
+  font-size:clamp(2rem,3.6vw,3.1rem);font-weight:700;letter-spacing:-.03em;line-height:1.12;
+}
+.problem h2 em{font-style:normal;color:var(--ink-faint);font-weight:300;}
+.problem-body p{font-size:1.12rem;color:var(--ink-soft);margin-bottom:1.4rem;max-width:36rem;}
+.problem-body strong{color:var(--ink);font-weight:600;}
+.pull{
+  margin-top:2.4rem;padding-left:1.4rem;border-left:3px solid var(--amber);
+  font-size:1.3rem;font-weight:600;line-height:1.45;letter-spacing:-.015em;max-width:30rem;
+}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);}
+.reveal.in{opacity:1;transform:none;}
+.reveal[data-d="1"]{transition-delay:.08s}
+.reveal[data-d="2"]{transition-delay:.16s}
+.reveal[data-d="3"]{transition-delay:.24s}
+.reveal[data-d="4"]{transition-delay:.32s}
+.reveal[data-d="5"]{transition-delay:.4s}
+
+/* ===== LOOP statement ===== */
+.loop{padding:7rem 0;text-align:center;background:var(--paper);}
+.loop h2{
+  font-size:clamp(1.9rem,3.6vw,3rem);font-weight:700;letter-spacing:-.03em;line-height:1.18;
+  max-width:46rem;margin:1.4rem auto 0;
+}
+.loop h2 .dn{color:var(--ink);}
+.loop h2 .up{color:var(--amber-deep);}
+.loop p{max-width:34rem;margin:1.6rem auto 0;color:var(--ink-soft);font-size:1.1rem;}
+
+/* ===== BENEFITS ===== */
+.benefits{padding:2rem 0 9rem;}
+.benefits-head{margin-bottom:3.6rem;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.benefits-head h2{font-size:clamp(1.9rem,3.2vw,2.7rem);font-weight:700;letter-spacing:-.03em;max-width:24rem;line-height:1.15;margin-top:.8rem;}
+.benefits-head p{max-width:24rem;color:var(--ink-soft);}
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
+.bcard{
+  background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius);
+  padding:2rem 1.8rem 1.9rem;position:relative;overflow:hidden;cursor:pointer;
+  transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .3s;
+}
+.bcard:hover{transform:translateY(-6px);box-shadow:0 24px 48px -24px rgba(24,20,16,.22);border-color:var(--line-strong);}
+.bcard::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--accent,var(--ink));transform:scaleX(0);transform-origin:left;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.bcard:hover::before{transform:scaleX(1);}
+.bcard .mono{display:block;margin-bottom:1.5rem;}
+.bcard h3{font-size:1.12rem;font-weight:700;letter-spacing:-.015em;line-height:1.35;margin-bottom:.6rem;}
+.bcard p{font-size:.93rem;color:var(--ink-soft);line-height:1.6;}
+.bcard .tag{
+  display:inline-block;margin-top:1.3rem;
+  font-family:var(--font-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-faint);border:1px solid var(--line);border-radius:999px;padding:.32rem .75rem;
+}
+
+/* ===== ASSESSMENT ===== */
+.assess{padding:8rem 0;background:var(--paper-raised);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.assess .wrap{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);gap:5rem;align-items:center;}
+.assess h2{font-size:clamp(2rem,3.4vw,2.9rem);font-weight:700;letter-spacing:-.03em;line-height:1.12;margin:1rem 0 1.2rem;}
+.assess p.lede2{color:var(--ink-soft);font-size:1.08rem;max-width:30rem;}
+.assess ul{list-style:none;margin:1.8rem 0 2.4rem;}
+.assess li{padding:.5rem 0 .5rem 1.6rem;position:relative;color:var(--ink-soft);font-size:.98rem;}
+.assess li::before{content:"";position:absolute;left:0;top:1rem;width:8px;height:8px;background:var(--amber);border-radius:1px;}
+.scorecard{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  padding:2.2rem;box-shadow:0 30px 60px -40px rgba(24,20,16,.3);
+}
+.sc-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.6rem;}
+.sc-head b{font-weight:700;font-size:1.02rem;}
+.sc-row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,2fr) 38px;gap:1rem;align-items:center;padding:.55rem 0;}
+.sc-row .mono{font-size:.62rem;}
+.sc-bar{height:10px;background:#EFE9DD;border:1px solid var(--line);border-radius:2px;overflow:hidden;}
+.sc-fill{height:100%;width:0;background:var(--c);transition:width 1.1s cubic-bezier(.2,.8,.2,1);}
+.reveal.in .sc-fill{width:var(--w);}
+.sc-score{font-family:var(--font-mono);font-size:.78rem;text-align:right;}
+.sc-foot{
+  margin-top:1.4rem;padding-top:1.3rem;border-top:1px dashed var(--line-strong);
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.sc-foot .badge{
+  font-family:var(--font-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--amber);color:var(--ink);padding:.35rem .8rem;border-radius:2px;font-weight:500;
+}
+
+/* ===== PROOF / TESTIMONIALS ===== */
+.proof{padding:8rem 0 7rem;}
+.proof-head{margin-bottom:2.6rem;}
+.proof-head h2{font-size:clamp(1.9rem,3.2vw,2.7rem);font-weight:700;letter-spacing:-.03em;margin-top:.8rem;}
+.logo-row{
+  display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
+  padding:1.8rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:3rem;
+}
+.client{
+  font-weight:600;letter-spacing:.12em;font-size:.92rem;color:var(--ink-faint);text-transform:uppercase;
+  transition:color .25s;cursor:pointer;
+}
+.client:hover{color:var(--ink);}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
+.tcard{
+  background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius);
+  padding:2rem 1.8rem;display:flex;flex-direction:column;gap:1.5rem;cursor:pointer;
+  transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s;
+}
+.tcard:hover{transform:translateY(-5px);box-shadow:0 24px 48px -24px rgba(24,20,16,.2);}
+.tcard .qmark{font-size:2.4rem;font-weight:700;color:var(--amber);line-height:.5;height:.85rem;}
+.tcard .quote{font-size:1rem;line-height:1.65;color:var(--ink);}
+.tcard .who{display:flex;align-items:center;gap:.9rem;margin-top:auto;}
+.avatar{
+  width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
+  background:var(--ink);color:var(--paper);
+  font-weight:700;font-size:.78rem;letter-spacing:.04em;flex-shrink:0;
+}
+.who b{display:block;font-size:.92rem;font-weight:600;line-height:1.3;}
+.who div span{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);}
+.advisory{
+  margin-top:3rem;border:1.5px solid var(--ink);border-radius:var(--radius);
+  padding:2rem 2.2rem;display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
+  background:var(--paper-raised);
+}
+.advisory h3{font-size:1.18rem;font-weight:700;letter-spacing:-.015em;margin-bottom:.3rem;}
+.advisory p{color:var(--ink-soft);font-size:.95rem;max-width:36rem;}
+
+/* ===== EVENTS ===== */
+.events{padding:2rem 0 8rem;}
+.events-head{margin-bottom:2.8rem;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.events-head h2{font-size:clamp(1.9rem,3.2vw,2.7rem);font-weight:700;letter-spacing:-.03em;margin-top:.8rem;}
+.events-head p{max-width:26rem;color:var(--ink-soft);}
+.event-list{border-top:1px solid var(--line);}
+.event{
+  display:grid;grid-template-columns:120px minmax(0,1fr) auto auto;gap:2.4rem;align-items:center;
+  padding:1.9rem .6rem;border-bottom:1px solid var(--line);cursor:pointer;
+  transition:background .25s ease;
+}
+.event:hover{background:var(--paper-raised);}
+.edate{text-align:left;}
+.edate b{display:block;font-size:1.9rem;font-weight:700;letter-spacing:-.03em;line-height:1.05;}
+.edate .mono{font-size:.64rem;}
+.event h3{font-size:1.15rem;font-weight:700;letter-spacing:-.015em;margin-bottom:.25rem;}
+.event p{font-size:.92rem;color:var(--ink-soft);max-width:36rem;}
+.etag{
+  font-family:var(--font-mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-faint);border:1px solid var(--line-strong);border-radius:999px;padding:.35rem .85rem;white-space:nowrap;
+}
+
+/* ===== CTA ===== */
+.cta{
+  background:var(--ink);color:var(--paper);
+  padding:8rem 0;position:relative;overflow:hidden;
+}
+.cta::before{
+  content:"";position:absolute;right:-12%;top:50%;transform:translateY(-50%);
+  width:560px;height:560px;border-radius:50%;
+  background:radial-gradient(circle, rgba(233,179,11,.16), transparent 65%);
+}
+.cta .wrap{position:relative;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:4rem;align-items:center;}
+.cta h2{font-size:clamp(2.1rem,4vw,3.4rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin:1.2rem 0 1.4rem;}
+.cta h2 .thin{font-weight:300;color:rgba(246,242,234,.6);}
+.cta p{color:rgba(246,242,234,.66);font-size:1.1rem;max-width:30rem;margin-bottom:2.2rem;}
+.cta .mono{color:rgba(246,242,234,.4);}
+.cta .btn{background:var(--amber);border-color:var(--amber);color:var(--ink);}
+.cta .btn:hover{background:var(--paper);border-color:var(--paper);}
+.cta-card{
+  background:rgba(246,242,234,.05);border:1px solid rgba(246,242,234,.14);
+  border-radius:var(--radius);padding:2.2rem;
+}
+.cta-card .row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 0;border-bottom:1px solid rgba(246,242,234,.1);
+  font-size:.95rem;
+}
+.cta-card .row:last-child{border-bottom:none;}
+.cta-card .row b{font-weight:600;}
+.cta-card .row span{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber-text);white-space:nowrap;margin-left:1rem;}
+
+/* ===== FOOTER ===== */
+footer{padding:3.2rem 0;background:var(--ink);color:rgba(246,242,234,.5);border-top:1px solid rgba(246,242,234,.1);}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;}
+footer .logo .logo-word{color:var(--paper);}
+footer a{color:rgba(246,242,234,.6);text-decoration:none;font-size:.88rem;}
+footer a:hover{color:var(--paper);}
+footer .flinks{display:flex;gap:1.8rem;}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
+  html{scroll-behavior:auto;}
+  .reveal,.plate,.panel{opacity:1!important;transform:none!important;}
+}
+@media (max-width:920px){
+  .problem .wrap,.cta .wrap,.assess .wrap{grid-template-columns:1fr;}
+  .tgrid{grid-template-columns:1fr;}
+  .event{grid-template-columns:64px minmax(0,1fr);gap:1.2rem;}
+  .event .etag,.event .btn{grid-column:2;justify-self:start;}
+  .logo-row{justify-content:flex-start;}
+  .hero-scrolly{height:760vh;}
+  .hero-stage{grid-template-columns:1fr;gap:0;align-content:center;padding-top:5.5rem;}
+  .hero-copy{min-height:430px;order:2;}
+  .iso-scene{height:300px;order:1;}
+  .iso{width:min(220px,56vw);transform:translateY(-40px) rotateX(57deg) rotateZ(-45deg);}
+  .plate{transform:translateZ(calc(var(--i) * -34px));padding:.7rem .8rem;font-size:1rem;}
+  .plate.in.lift{transform:translateZ(calc(var(--i) * -34px + 64px));}
+  h1{font-size:clamp(2rem,8vw,2.6rem);}
+  .panel h3{font-size:1.5rem;}
+  .hero-progress{display:none;}
+  .flow-label{display:none;}
+  .bgrid{grid-template-columns:1fr;}
+  .nav-links a:not(.btn){display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-left">
+    <a class="logo" href="#top">
+      <span class="logo-word">adaptive<b>os</b></span><span class="logo-dot"></span>
+    </a>
+    <span class="nav-by mono">by The Design Gym</span>
+  </div>
+  <div class="nav-links">
+    <a href="#top">Architecture</a>
+    <a href="#benefits">What you get</a>
+    <a href="#events">Events</a>
+    <a href="brand-board.html">Brand board</a>
+    <a href="#assessment" class="btn">Take the test <span class="arr">&rarr;</span></a>
+  </div>
+</nav>
+
+<div class="hero-scrolly" id="top">
+  <div class="hero-sticky">
+    <div class="hero-progress" id="heroProgress">
+      <b></b><b></b><b></b><b></b><b></b><b></b><b></b>
+    </div>
+    <div class="hero-stage">
+      <div class="hero-copy" id="heroCopy">
+        <div class="panel active" data-p="0">
+          <div class="kicker">
+            <span class="kicker-dot"></span>
+            <span class="mono">Your team's operating system</span>
+          </div>
+          <h1>The way your team works <span class="thin">should</span> <span class="hl">learn too.</span></h1>
+          <p class="lede">Adaptive OS is a self-improving operating system for teams. It installs the structures you need for clearer alignment, tighter rhythms, and workflows augmented where it matters most.</p>
+          <div class="hero-ctas">
+            <a href="#assessment" class="btn">Take the test <span class="arr">&rarr;</span></a>
+            <a href="#benefits" class="btn ghost">What you get</a>
+          </div>
+          <div class="hero-note mono">Built for human + agentic teams &middot; Works across stacks</div>
+        </div>
+        <div class="panel" data-p="1">
+          <div class="num"><i style="background:var(--l1)"></i>Layer 01 / 05</div>
+          <h3>Strategy &amp; Outcomes</h3>
+          <p class="body">The top of the cascade. Direction lives here, written down and shared, so every layer below inherits it.</p>
+          <p class="q">"Why we exist, where we're going, and how we'll get there."</p>
+        </div>
+        <div class="panel" data-p="2">
+          <div class="num"><i style="background:var(--l2)"></i>Layer 02 / 05</div>
+          <h3>People &amp; Agents</h3>
+          <p class="body">Humans and AI agents on one roster. Roles, ownership, and growth paths designed for mixed teams.</p>
+          <p class="q">"Who we are, how we're organized, and how we grow."</p>
+        </div>
+        <div class="panel" data-p="3">
+          <div class="num"><i style="background:var(--l3)"></i>Layer 03 / 05</div>
+          <h3>Process &amp; Workflows</h3>
+          <p class="body">Cycle-based delivery with your own methodology inside. SAFe, Scrum, or whatever your teams already trust.</p>
+          <p class="q">"How work gets done, governed, and improved."</p>
+        </div>
+        <div class="panel" data-p="4">
+          <div class="num"><i style="background:var(--l4)"></i>Layer 04 / 05</div>
+          <h3>Platforms &amp; Tools</h3>
+          <p class="body">Stack-agnostic by design. Google, Microsoft, and the systems you already run, wired to the layers above.</p>
+          <p class="q">"Which systems and infrastructure enable our work."</p>
+        </div>
+        <div class="panel" data-p="5">
+          <div class="num"><i style="background:var(--l5)"></i>Layer 05 / 05</div>
+          <h3>Data &amp; Context</h3>
+          <p class="body">The foundation. What you know and what you've learned, captured as a context layer both people and agents can use.</p>
+          <p class="q">"What we know, what we've learned, and how we feed it back."</p>
+        </div>
+        <div class="panel" data-p="6">
+          <div class="num"><i class="loop-dash"></i>The loop</div>
+          <h3>Intent flows down. Signal flows up.</h3>
+          <p class="body">The architecture is a directional system. Strategy cascades into execution, and what execution learns feeds back into strategy. This loop is what makes the OS adaptive instead of static.</p>
+        </div>
+      </div>
+      <div class="iso-scene" id="isoScene" aria-hidden="true">
+        <div class="flow down" id="flowDown">
+          <span class="flow-label">Intent flows down</span>
+          <svg viewBox="0 0 18 320" preserveAspectRatio="none" fill="none">
+            <line class="dash" x1="9" y1="6" x2="9" y2="300" stroke="#8C8472" stroke-width="1.6"/>
+            <path d="M3 300 L9 306 L15 300" stroke="#8C8472" stroke-width="1.6" fill="none"/>
+          </svg>
+        </div>
+        <div class="iso">
+          <div class="plate" data-l="1" style="--i:0"><span>Strategy &amp; Outcomes</span><span class="idx">L1</span></div>
+          <div class="plate" data-l="2" style="--i:1"><span>People &amp; Agents</span><span class="idx">L2</span></div>
+          <div class="plate" data-l="3" style="--i:2"><span>Process &amp; Workflows</span><span class="idx">L3</span></div>
+          <div class="plate" data-l="4" style="--i:3"><span>Platforms &amp; Tools</span><span class="idx">L4</span></div>
+          <div class="plate" data-l="5" style="--i:4"><span>Data &amp; Context</span><span class="idx">L5</span></div>
+        </div>
+        <div class="flow up" id="flowUp">
+          <span class="flow-label">Signal flows up</span>
+          <svg viewBox="0 0 18 320" preserveAspectRatio="none" fill="none">
+            <line class="dash" x1="9" y1="20" x2="9" y2="314" stroke="#C99400" stroke-width="1.6"/>
+            <path d="M3 20 L9 14 L15 20" stroke="#C99400" stroke-width="1.6" fill="none"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-cue" id="scrollCue">
+      <span class="line"></span>
+      <span class="mono">Scroll to assemble the system</span>
+    </div>
+  </div>
+</div>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Clearer alignment</span><span>Tighter rhythms</span><span>Augmented workflows</span><span>Human + agent teams</span><span>Signal feeds intent</span><span>Bring your own methodology</span>
+    <span>Clearer alignment</span><span>Tighter rhythms</span><span>Augmented workflows</span><span>Human + agent teams</span><span>Signal feeds intent</span><span>Bring your own methodology</span>
+  </div>
+</div>
+
+<section class="problem">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="mono">01 / The problem</span>
+      <h2 style="margin-top:.9rem;">Teams cannot keep up with the pace of change. <em>And it is not a tooling problem.</em></h2>
+    </div>
+    <div class="problem-body">
+      <p class="reveal" data-d="1">New AI tools arrive weekly. Org charts shift quarterly. Most teams respond by adding more software, more training, more meetings. The friction stays, because the friction lives in the <strong>underlying system</strong>, not in any single tool.</p>
+      <p class="reveal" data-d="2">Leading adaptively goes beyond L&amp;D programs or deploying AI without a strategy. It requires an operating system: shared structures that connect why you exist to how work actually flows, and that improve themselves as your team learns.</p>
+      <div class="pull reveal" data-d="3">If your underlying system is broken, your teams will be busy running in place.</div>
+    </div>
+  </div>
+</section>
+
+<section class="loop">
+  <div class="wrap reveal">
+    <span class="mono">02 / Why it stays alive</span>
+    <h2>Most operating models are documents. <span class="dn">This one is a loop</span> <span class="up">that learns by teams.</span></h2>
+    <p>Every cycle, your team's retros, metrics, and working context feed back into the layers above. The OS you run in month six is smarter than the one you installed on day one.</p>
+  </div>
+</section>
+
+<section class="benefits" id="benefits">
+  <div class="wrap">
+    <div class="benefits-head reveal">
+      <div>
+        <span class="mono">03 / What you get</span>
+        <h2>Structure first. Tools second. Always in that order.</h2>
+      </div>
+      <p>Adaptive OS is co-created with your teams, personalized to your industry and function, and built to outlast any single platform decision.</p>
+    </div>
+    <div class="bgrid">
+      <div class="bcard reveal" style="--accent:var(--l1)">
+        <span class="mono">B.01</span>
+        <h3>Culture before tool adoption</h3>
+        <p>Your team's charter becomes the system prompt. Values and working agreements shape how every workflow and agent behaves.</p>
+        <span class="tag">Team Charter as System Prompt</span>
+      </div>
+      <div class="bcard reveal" data-d="1" style="--accent:var(--l2)">
+        <span class="mono">B.02</span>
+        <h3>Alignment for leadership and operators</h3>
+        <p>Strategy cascades from the executive view to the team backlog without losing meaning along the way.</p>
+        <span class="tag">Cascading Strategy Approach</span>
+      </div>
+      <div class="bcard reveal" data-d="2" style="--accent:var(--l3)">
+        <span class="mono">B.03</span>
+        <h3>Co-create the OS together</h3>
+        <p>A collaborative platform where teams build their own operating system, personalized to industry and function.</p>
+        <span class="tag">Personalized to Industry + Function</span>
+      </div>
+      <div class="bcard reveal" style="--accent:var(--l4)">
+        <span class="mono">B.04</span>
+        <h3>Works across technology stacks</h3>
+        <p>Designed to run on what you already own. Google, Microsoft, and beyond, with no forced migration.</p>
+        <span class="tag">Google / Microsoft / +</span>
+      </div>
+      <div class="bcard reveal" data-d="1" style="--accent:var(--ink)">
+        <span class="mono">B.05</span>
+        <h3>Bring your own methodology</h3>
+        <p>Cycle-based delivery that wraps around SAFe, Scrum, or your house style instead of replacing it.</p>
+        <span class="tag">SAFe / Scrum / +</span>
+      </div>
+      <div class="bcard reveal" data-d="2" style="--accent:var(--amber)">
+        <span class="mono">B.06</span>
+        <h3>Workflows for human + agentic teams</h3>
+        <p>Redesign how work flows when half your teammates are AI agents, grounded in a shared context layer.</p>
+        <span class="tag">OS Context Layer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="assess" id="assessment">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="mono">04 / The readiness test</span>
+      <h2>Where does your operating system stand today?</h2>
+      <p class="lede2">A 15 minute assessment designed for VPs and team leads. Answer questions across the five layers and get a readiness profile of your current state, with the gaps ranked by what they cost you.</p>
+      <ul>
+        <li>Scores all five layers, from strategy to data</li>
+        <li>Benchmarks your team against adaptive peers in your industry</li>
+        <li>Pinpoints where intent breaks down on the way to execution</li>
+        <li>Ends with a 90 day starting plan, not a sales call</li>
+      </ul>
+      <a href="mailto:hello@thedesigngym.com?subject=Adaptive%20Readiness%20Test" class="btn">Take the test <span class="arr">&rarr;</span></a>
+    </div>
+    <div class="scorecard reveal" data-d="2">
+      <div class="sc-head"><b>Readiness profile</b><span class="mono">Sample report</span></div>
+      <div class="sc-row"><span class="mono">Strategy &amp; Outcomes</span><div class="sc-bar"><div class="sc-fill" style="--c:var(--l1);--w:72%"></div></div><span class="sc-score">72</span></div>
+      <div class="sc-row"><span class="mono">People &amp; Agents</span><div class="sc-bar"><div class="sc-fill" style="--c:var(--l2);--w:58%"></div></div><span class="sc-score">58</span></div>
+      <div class="sc-row"><span class="mono">Process &amp; Workflows</span><div class="sc-bar"><div class="sc-fill" style="--c:var(--l3);--w:41%"></div></div><span class="sc-score">41</span></div>
+      <div class="sc-row"><span class="mono">Platforms &amp; Tools</span><div class="sc-bar"><div class="sc-fill" style="--c:var(--l4);--w:66%"></div></div><span class="sc-score">66</span></div>
+      <div class="sc-row"><span class="mono">Data &amp; Context</span><div class="sc-bar"><div class="sc-fill" style="--c:var(--l5);--w:33%"></div></div><span class="sc-score">33</span></div>
+      <div class="sc-foot">
+        <span class="mono">Biggest gap: Data &amp; Context</span>
+        <span class="badge">Profile: Emerging</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="proof">
+  <div class="wrap">
+    <div class="proof-head reveal">
+      <span class="mono">05 / Proof</span>
+      <h2>Leaders who moved first</h2>
+    </div>
+    <div class="logo-row reveal" data-d="1">
+      <span class="client">Northwind</span>
+      <span class="client">Helios Energy</span>
+      <span class="client">Crestline</span>
+      <span class="client">Atlas Freight</span>
+      <span class="client">Meridian Health</span>
+      <span class="client">Vantage Labs</span>
+    </div>
+    <div class="tgrid">
+      <div class="tcard reveal">
+        <span class="qmark">&ldquo;</span>
+        <p class="quote">We had every tool and still missed quarters. Adaptive OS gave us one operating picture. Our planning cycle went from six weeks to nine days.</p>
+        <div class="who">
+          <span class="avatar">MC</span>
+          <div><b>Maya Chen</b><span>VP Operations &middot; Northwind</span></div>
+        </div>
+      </div>
+      <div class="tcard reveal" data-d="1">
+        <span class="qmark">&ldquo;</span>
+        <p class="quote">The readiness test told us in fifteen minutes what two consulting decks could not. We knew exactly which layer was broken and where to start.</p>
+        <div class="who">
+          <span class="avatar">DO</span>
+          <div><b>Daniel Okafor</b><span>SVP Product &middot; Helios Energy</span></div>
+        </div>
+      </div>
+      <div class="tcard reveal" data-d="2">
+        <span class="qmark">&ldquo;</span>
+        <p class="quote">Our agents finally work from the same context as our people. The feedback loop is real. Month six looked nothing like day one, in the best way.</p>
+        <div class="who">
+          <span class="avatar">PR</span>
+          <div><b>Priya Raghavan</b><span>SVP Transformation &middot; Meridian Health</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="advisory reveal">
+      <div>
+        <h3>Join the Partner Advisory Council</h3>
+        <p>Quarterly previews of the roadmap, early access to new assessment modules, and a direct line into how the OS evolves. Open to VPs and above at partner organizations.</p>
+      </div>
+      <a href="mailto:hello@thedesigngym.com?subject=Partner%20Advisory%20Council" class="btn ghost">Sign up for partner advisory <span class="arr">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="events" id="events">
+  <div class="wrap">
+    <div class="events-head reveal">
+      <div>
+        <span class="mono">06 / Events</span>
+        <h2>Upcoming webinars</h2>
+      </div>
+      <p>Live sessions with The Design Gym team. Bring your questions and your messiest workflow.</p>
+    </div>
+    <div class="event-list">
+      <div class="event reveal">
+        <div class="edate"><span class="mono">Jun 2026</span><b>25</b></div>
+        <div>
+          <h3>Diagnose your operating system in 45 minutes</h3>
+          <p>A live walkthrough of the readiness test, with anonymized profiles from real teams and what they did next.</p>
+        </div>
+        <span class="etag">Webinar &middot; 45 min</span>
+        <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Diagnose%20your%20OS%20(Jun%2025)" class="btn ghost">Register</a>
+      </div>
+      <div class="event reveal" data-d="1">
+        <div class="edate"><span class="mono">Jul 2026</span><b>16</b></div>
+        <div>
+          <h3>Designing workflows for human + agent teams</h3>
+          <p>How to redesign one real workflow so people and AI agents share context, ownership, and a feedback loop.</p>
+        </div>
+        <span class="etag">Webinar &middot; 60 min</span>
+        <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Human%20%2B%20agent%20workflows%20(Jul%2016)" class="btn ghost">Register</a>
+      </div>
+      <div class="event reveal" data-d="2">
+        <div class="edate"><span class="mono">Aug 2026</span><b>6</b></div>
+        <div>
+          <h3>Cascading strategy without the slideware</h3>
+          <p>Turning executive intent into team backlogs that still mean something by the time they ship.</p>
+        </div>
+        <span class="etag">Webinar &middot; 45 min</span>
+        <a href="mailto:hello@thedesigngym.com?subject=Register%3A%20Cascading%20strategy%20(Aug%206)" class="btn ghost">Register</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="cta">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="mono">07 / Get started</span>
+      <h2>Stop running in place. <span class="thin">Start moving together.</span></h2>
+      <p>Start with the readiness test, then bring one team and one real goal. We will walk the five layers with you and show you what your adaptive OS could look like in 90 days.</p>
+      <a href="#assessment" class="btn">Take the test <span class="arr">&rarr;</span></a>
+    </div>
+    <div class="cta-card reveal" data-d="2">
+      <div class="row"><b>Discovery session</b><span>Week 1</span></div>
+      <div class="row"><b>Layer mapping with your team</b><span>Weeks 2 to 4</span></div>
+      <div class="row"><b>OS install + first cycle</b><span>Weeks 5 to 8</span></div>
+      <div class="row"><b>First feedback loop closes</b><span>Week 12</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a class="logo" href="#top">
+      <span class="logo-word">adaptive<b>os</b></span><span class="logo-dot"></span>
+    </a>
+    <div class="flinks">
+      <a href="#top">Architecture</a>
+      <a href="#benefits">What you get</a>
+      <a href="#assessment">Readiness test</a>
+      <a href="#events">Events</a>
+      <a href="brand-board.html">Brand board</a>
+    </div>
+    <span class="mono" style="color:rgba(246,242,234,.35)">&copy; 2026 The Design Gym</span>
+  </div>
+</footer>
+
+<script>
+// nav scroll state
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 24), {passive:true});
+
+// generic reveal-on-scroll
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, {threshold:.18});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// hero scrollytelling: 7 states (intro, 5 layers, loop)
+const scrolly = document.querySelector('.hero-scrolly');
+const plates = [...document.querySelectorAll('.plate')];
+const panels = [...document.querySelectorAll('.panel')];
+const dots = [...document.querySelectorAll('#heroProgress b')];
+const heroProgress = document.getElementById('heroProgress');
+const scrollCue = document.getElementById('scrollCue');
+const flowDown = document.getElementById('flowDown');
+const flowUp = document.getElementById('flowUp');
+const STATES = 7;
+
+function onScroll(){
+  const total = scrolly.offsetHeight - innerHeight;
+  const p = Math.min(1, Math.max(0, -scrolly.getBoundingClientRect().top / total));
+  const step = Math.min(STATES - 1, Math.floor(p * STATES * 1.03));
+
+  plates.forEach((pl, i) => {
+    const s = i + 1; // plate i fills at step i+1
+    pl.classList.toggle('in', step >= s);
+    pl.classList.toggle('focus', step === s && step < 6);
+    // exploded view: plates above the focused layer lift away to reveal it
+    pl.classList.toggle('lift', step >= 2 && step <= 5 && s < step);
+  });
+  panels.forEach((pn, i) => pn.classList.toggle('active', i === step));
+  dots.forEach((d, i) => d.classList.toggle('on', i <= step));
+  heroProgress.classList.toggle('hide', step === 0 || step === STATES - 1);
+  scrollCue.classList.toggle('hide', step > 0);
+  flowDown.classList.toggle('show', step === STATES - 1);
+  flowUp.classList.toggle('show', step === STATES - 1);
+}
+addEventListener('scroll', onScroll, {passive:true});
+addEventListener('resize', onScroll);
+onScroll();
+</script>
+</body>
+</html>

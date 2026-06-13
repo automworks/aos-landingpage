@@ -1,0 +1,307 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Adaptive OS | Brand Board v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://api.fontshare.com" />
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@300,400,401,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#F6F2EA;
+  --paper-raised:#FDFBF6;
+  --ink:#181410;
+  --ink-soft:#5C5546;
+  --ink-faint:#8C8472;
+  --line:#E2DACA;
+  --line-strong:#CFC5B0;
+  --amber:#FFCD00;
+  --amber-text:#E9B30B;
+  --amber-deep:#C99400;
+  --l1:#4A453D; --l2:#FFCD00; --l3:#17A38B; --l4:#CE3B82; --l5:#181410;
+  --radius:4px;
+  --font-display:'General Sans',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--font-display);line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);}
+.wrap{max-width:1180px;margin:0 auto;padding:0 5vw;}
+header{padding:4.5rem 0 3rem;border-bottom:1px solid var(--line);}
+header .wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;}
+h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:700;letter-spacing:-.03em;margin-top:.8rem;}
+h1 span{font-weight:300;color:var(--ink-faint);}
+header a{
+  font-family:var(--font-mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;border:1.5px solid var(--ink);border-radius:999px;padding:.6rem 1.2rem;
+  transition:background .2s,color .2s;
+}
+header a:hover{background:var(--ink);color:var(--paper);}
+section{padding:4.5rem 0;border-bottom:1px solid var(--line);}
+.sec-head{margin-bottom:2.6rem;}
+.sec-head h2{font-size:1.6rem;font-weight:700;letter-spacing:-.02em;margin-top:.5rem;}
+.sec-head p{color:var(--ink-soft);max-width:38rem;margin-top:.4rem;font-size:.98rem;}
+
+/* logo options */
+.logo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
+.logo-cell{
+  background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius);
+  padding:1.2rem;display:flex;flex-direction:column;gap:1rem;
+}
+.logo-stage{
+  border-radius:4px;height:220px;display:grid;place-items:center;
+  background:var(--paper);border:1px dashed var(--line-strong);
+}
+.logo-stage.dark{background:var(--ink);border:none;}
+.logo-cell h3{font-size:1rem;font-weight:700;}
+.logo-cell p{font-size:.86rem;color:var(--ink-soft);line-height:1.55;}
+.pill{
+  align-self:flex-start;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--line-strong);border-radius:999px;padding:.25rem .7rem;color:var(--ink-faint);
+}
+.pill.rec{background:var(--amber);border-color:var(--amber);color:var(--ink);font-weight:500;}
+
+/* option A: layered mark + wordmark */
+.markA{display:flex;align-items:center;gap:14px;}
+.markA .tile{width:54px;height:54px;border-radius:4px;background:var(--ink);display:grid;place-items:center;}
+.markA .word{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;}
+.markA .word i{font-style:normal;font-weight:300;}
+/* option B: A/OS monogram */
+.markB{font-size:2.6rem;font-weight:700;letter-spacing:-.04em;color:var(--paper);}
+.markB .slash{color:var(--amber);font-weight:300;}
+/* option C: lowercase + loop dot */
+.markC{font-size:1.9rem;font-weight:300;letter-spacing:-.025em;display:flex;align-items:baseline;}
+.markC b{font-weight:700;}
+.markC .dot{width:.42em;height:.42em;border-radius:50%;background:var(--amber);display:inline-block;margin-left:.18em;}
+
+/* color */
+.swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:1.1rem;margin-bottom:2.2rem;}
+.swatch{border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);background:var(--paper-raised);}
+.swatch .chip{height:120px;}
+.swatch .meta{padding:.9rem 1rem;}
+.swatch .meta b{display:block;font-size:.88rem;font-weight:700;}
+.swatch .meta span{font-family:var(--font-mono);font-size:.68rem;color:var(--ink-faint);letter-spacing:.06em;}
+.swatch .meta i{display:block;font-style:normal;font-size:.74rem;color:var(--ink-soft);margin-top:.3rem;}
+.ratio{display:flex;height:42px;border-radius:4px;overflow:hidden;border:1px solid var(--line);}
+.ratio div{display:grid;place-items:center;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.08em;}
+.layer-strip{display:flex;gap:8px;margin-top:2.2rem;}
+.layer-strip div{
+  flex:1;height:54px;border-radius:4px;display:grid;place-items:center;
+  font-family:var(--font-mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;
+}
+
+/* type */
+.type-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:3rem;}
+.spec{border-bottom:1px solid var(--line);padding:1.3rem 0;display:flex;align-items:baseline;justify-content:space-between;gap:2rem;}
+.spec:first-child{padding-top:0;}
+.spec .sample{letter-spacing:-.03em;}
+.spec .mono{flex-shrink:0;text-align:right;}
+.type-notes{background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius);padding:1.8rem;}
+.type-notes h3{font-size:1rem;font-weight:700;margin-bottom:.8rem;}
+.type-notes ul{list-style:none;}
+.type-notes li{
+  font-size:.9rem;color:var(--ink-soft);padding:.55rem 0 .55rem 1.4rem;position:relative;
+  border-bottom:1px solid var(--line);
+}
+.type-notes li:last-child{border-bottom:none;}
+.type-notes li::before{content:"";position:absolute;left:0;top:1.05rem;width:7px;height:7px;border-radius:2px;background:var(--amber);}
+
+/* usage */
+.usage-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;}
+.usage{border-radius:var(--radius);padding:1.8rem;border:1px solid var(--line);background:var(--paper-raised);}
+.usage h3{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;}
+.usage h3 .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;color:var(--paper);}
+.usage.do h3 .ic{background:var(--l3);}
+.usage.dont h3 .ic{background:var(--l4);}
+.usage li{font-size:.9rem;color:var(--ink-soft);margin-left:1.1rem;padding:.3rem 0;}
+
+/* voice */
+.voice-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.1rem;}
+.voice{background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius);padding:1.6rem;}
+.voice b{display:block;font-size:.95rem;margin-bottom:.4rem;}
+.voice p{font-size:.86rem;color:var(--ink-soft);}
+footer{padding:2.6rem 0;display:flex;justify-content:space-between;flex-wrap:gap;}
+
+@media (max-width:880px){
+  .logo-grid,.voice-grid{grid-template-columns:1fr;}
+  .swatches{grid-template-columns:repeat(2,1fr);}
+  .type-grid,.usage-grid{grid-template-columns:1fr;}
+  .layer-strip{flex-wrap:wrap;}
+  .layer-strip div{min-width:45%;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div>
+      <span class="mono">Brand board &middot; v1 &middot; June 2026</span>
+      <h1>Adaptive OS <span>/ Identity system</span></h1>
+    </div>
+    <a href="index.html">&larr; View landing page</a>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="mono">01 / Name treatment</span>
+      <h2>One primary mark, two companions</h2>
+      <p>All three share the same DNA: geometric sans, warm ink, and the amber signal. Option C is the selected primary; A and B are companions for formal documents and tiny surfaces.</p>
+    </div>
+    <div class="logo-grid">
+      <div class="logo-cell">
+        <div class="logo-stage">
+          <span class="markC">adaptive<b>os</b><span class="dot"></span></span>
+        </div>
+        <span class="pill rec">Option C &middot; Selected primary</span>
+        <h3>Lowercase + loop dot</h3>
+        <p>Human and product-like at once. Light "adaptive" meets bold "os," and the amber dot is the feedback signal that keeps the system alive. Used in nav, footer, and all primary surfaces.</p>
+      </div>
+      <div class="logo-cell">
+        <div class="logo-stage">
+          <div class="markA">
+            <span class="tile">
+              <svg width="26" height="26" viewBox="0 0 16 16" fill="none">
+                <rect x="1" y="1" width="14" height="2.4" rx="1.2" fill="#F6F2EA"/>
+                <rect x="3" y="6.8" width="12" height="2.4" rx="1.2" fill="#E9B30B"/>
+                <rect x="1" y="12.6" width="14" height="2.4" rx="1.2" fill="#F6F2EA"/>
+              </svg>
+            </span>
+            <span class="word">Adaptive&thinsp;<i>OS</i></span>
+          </div>
+        </div>
+        <span class="pill">Option A &middot; Formal companion</span>
+        <h3>Layered tile + wordmark</h3>
+        <p>Three bars stand for the cascade; the amber middle bar is the team. Reserved for formal contexts: proposals, contracts, and co-branded enterprise materials.</p>
+      </div>
+      <div class="logo-cell">
+        <div class="logo-stage dark">
+          <span class="markB">A<span class="slash">/</span>OS</span>
+        </div>
+        <span class="pill">Option B &middot; Compact</span>
+        <h3>A/OS monogram</h3>
+        <p>The slash reads as a path and as "operating system" shorthand. Strong at small sizes: favicons, app icons, social avatars, slide footers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="mono">02 / Color</span>
+      <h2>Warm monochrome, one signal</h2>
+      <p>Paper and ink do almost all the work. Amber is the only persistent accent: it marks signal, feedback, and the human pulse in the system. The five layer colors appear only when the architecture itself is on stage.</p>
+    </div>
+    <div class="swatches">
+      <div class="swatch"><div class="chip" style="background:#F6F2EA;border-bottom:1px solid var(--line)"></div><div class="meta"><b>Paper</b><span>#F6F2EA</span><i>Primary background</i></div></div>
+      <div class="swatch"><div class="chip" style="background:#FDFBF6;border-bottom:1px solid var(--line)"></div><div class="meta"><b>Paper Raised</b><span>#FDFBF6</span><i>Cards, surfaces</i></div></div>
+      <div class="swatch"><div class="chip" style="background:#181410"></div><div class="meta"><b>Ink</b><span>#181410</span><i>Type, dark sections</i></div></div>
+      <div class="swatch"><div class="chip" style="background:#5C5546"></div><div class="meta"><b>Ink Soft</b><span>#5C5546</span><i>Body copy</i></div></div>
+      <div class="swatch"><div class="chip" style="background:#FFCD00"></div><div class="meta"><b>Amber Signal</b><span>#FFCD00</span><i>Fills and accents, max 5%</i></div></div>
+      <div class="swatch"><div class="chip" style="background:#E9B30B"></div><div class="meta"><b>Amber Text</b><span>#E9B30B</span><i>Amber type only, for contrast</i></div></div>
+    </div>
+    <div class="ratio">
+      <div style="flex:62;background:#F6F2EA;color:#8C8472;">62</div>
+      <div style="flex:25;background:#181410;color:#F6F2EA;">25</div>
+      <div style="flex:8;background:#5C5546;color:#F6F2EA;">8</div>
+      <div style="flex:5;background:#FFCD00;color:#181410;">5</div>
+    </div>
+    <div class="layer-strip">
+      <div style="background:#4A453D;color:#F6F2EA;">L1 Strategy #4A453D</div>
+      <div style="background:#FFCD00;color:#181410;">L2 People #FFCD00</div>
+      <div style="background:#17A38B;color:#0B2B25;">L3 Process #17A38B</div>
+      <div style="background:#CE3B82;color:#FDF3F8;">L4 Platforms #CE3B82</div>
+      <div style="background:#181410;color:#F6F2EA;">L5 Data #181410</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="mono">03 / Typography</span>
+      <h2>General Sans + IBM Plex Mono</h2>
+      <p>General Sans is geometric and modern without feeling cold. Plex Mono is the system's voice: labels, data, and anything the OS "says" about itself.</p>
+    </div>
+    <div class="type-grid">
+      <div>
+        <div class="spec"><span class="sample" style="font-size:2.6rem;font-weight:700;">Move together</span><span class="mono">Display / General Sans 700 / -3%</span></div>
+        <div class="spec"><span class="sample" style="font-size:1.6rem;font-weight:600;">Five layers, one system</span><span class="mono">H2 / General Sans 600 / -2%</span></div>
+        <div class="spec"><span class="sample" style="font-size:1.05rem;font-weight:400;color:var(--ink-soft);">Body copy is set in General Sans regular with relaxed leading for long-form reading.</span><span class="mono">Body / General Sans 400</span></div>
+        <div class="spec"><span class="sample mono" style="color:var(--ink);">SYSTEM LABEL / 02 / SIGNAL</span><span class="mono">Label / Plex Mono 500</span></div>
+      </div>
+      <div class="type-notes">
+        <h3>Rules of use</h3>
+        <ul>
+          <li>Headlines mix weight 700 with 300 in one line to pair confidence with calm.</li>
+          <li>Tracking tightens as size grows: -3% display, -2% headings, 0 body.</li>
+          <li>Mono is always uppercase, tracked at +14%, and never exceeds 12px equivalent.</li>
+          <li>No more than two weights per composition.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="mono">04 / Usage</span>
+      <h2>How to keep it sharp</h2>
+    </div>
+    <div class="usage-grid">
+      <div class="usage do">
+        <h3><span class="ic">&#10003;</span>Do</h3>
+        <ul>
+          <li>Lead with warm paper backgrounds; reserve full ink sections for one key moment per page.</li>
+          <li>Use amber for interactive states, signal markers, and the feedback loop only.</li>
+          <li>Show the five layer colors together, as a system, when explaining the architecture.</li>
+          <li>Keep generous whitespace; the calm is the brand.</li>
+        </ul>
+      </div>
+      <div class="usage dont">
+        <h3><span class="ic">&#215;</span>Don't</h3>
+        <ul>
+          <li>Don't use pure white #FFFFFF or pure black #000000; everything stays warm.</li>
+          <li>Don't use a single layer color decoratively outside the architecture story.</li>
+          <li>Don't add gradients, drop shadows on type, or outline styles to the wordmark.</li>
+          <li>Don't let amber exceed roughly 5% of any composition.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="border-bottom:none;">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="mono">05 / Voice</span>
+      <h2>How Adaptive OS sounds</h2>
+    </div>
+    <div class="voice-grid">
+      <div class="voice"><b>Plainspoken</b><p>Short sentences. Concrete verbs. We say "your team learns," not "organizational knowledge capture is operationalized."</p></div>
+      <div class="voice"><b>Warm, not soft</b><p>We name the problem directly: running in place, broken systems, tool sprawl. Then we offer the structure to fix it.</p></div>
+      <div class="voice"><b>Typographic discipline</b><p>No em dashes anywhere. Use a period, a comma, or a colon instead. Sentence case for headlines, uppercase only in mono labels.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+    <span class="mono">Adaptive OS &middot; The Design Gym</span>
+    <a href="index.html" class="mono" style="color:var(--ink);text-decoration:none;">View landing page &rarr;</a>
+  </div>
+</footer>
+
+</body>
+</html>
