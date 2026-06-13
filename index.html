@@ -186,7 +186,7 @@ h1 .hl::after{
   transition:
     transform .85s cubic-bezier(.2,.8,.2,1),
     background .55s ease, border-color .55s ease, color .55s ease,
-    opacity .55s ease, box-shadow .4s ease;
+    opacity .55s ease, filter .55s ease, box-shadow .4s ease;
   will-change:transform;
 }
 /* label left-aligned to the circle edge, across the widest span */
@@ -206,7 +206,7 @@ h1 .hl::after{
 .plate.in[data-l="4"]{background:var(--l4);border-color:var(--l4);color:#FDF3F8;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
 .plate.in[data-l="5"]{background:var(--l5);border-color:var(--l5);color:#F6F2EA;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.12);}
 .plate.focus{box-shadow:-18px 18px 0 -4px rgba(24,20,16,.16);}
-.plate.in.lift{--z:calc(var(--i) * -46px + 92px);opacity:.55;}
+.plate.in.lift{--z:calc(var(--i) * -46px + 92px);opacity:.55;filter:blur(2.5px);}
 /* signal flows, screen space */
 .flow{
   position:absolute;top:14%;bottom:14%;width:18px;opacity:0;transition:opacity .8s ease .15s;
