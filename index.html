@@ -165,64 +165,45 @@ h1 .hl::after{
 .panel .body{color:var(--ink-soft);font-size:1.08rem;max-width:27rem;line-height:1.65;}
 .panel .q{font-style:italic;color:var(--ink);font-size:1.08rem;margin-top:.9rem;max-width:27rem;}
 
-/* --- lock-tumbler layers --- */
+/* --- stacked circles (isometric) --- */
 .iso-scene{
   position:relative;height:600px;
   display:flex;align-items:center;justify-content:center;
 }
 .iso{
-  position:relative;width:min(420px,38vw);aspect-ratio:1;
+  position:relative;width:min(330px,30vw);aspect-ratio:1;
+  transform:translateY(-78px) rotateX(57deg) rotateZ(-45deg);
+  transform-style:preserve-3d;
 }
-/* the radius every tumbler aligns to when engaged */
-.iso::before{
-  content:"";position:absolute;left:50%;top:0;height:50%;width:1.5px;z-index:3;
-  transform:translateX(-50%);
-  background:repeating-linear-gradient(var(--line-strong) 0 5px, transparent 5px 11px);
-  opacity:.7;
-}
-/* lock core / keyway */
-.iso::after{
-  content:"";position:absolute;left:50%;top:50%;width:12px;height:12px;border-radius:50%;
-  transform:translate(-50%,-50%);background:var(--amber);z-index:6;
-  box-shadow:0 0 0 4px var(--paper);
-  transition:box-shadow .55s ease;
-}
-.iso.unlocked::after{box-shadow:0 0 0 4px var(--paper),0 0 24px 7px rgba(255,205,0,.55);}
 .plate{
-  position:absolute;top:50%;left:50%;
-  width:calc(100% - var(--i) * 76px);aspect-ratio:1;border-radius:50%;
-  --lc:var(--line-strong);--rot:var(--off,0deg);
-  transform:translate(-50%,-50%) rotate(var(--rot));
-  border:1.5px dashed var(--line-strong);background:transparent;
+  position:absolute;inset:0;border-radius:50%;
+  border:1.5px dashed var(--line-strong);
+  background:transparent;color:transparent;
+  transform:translateZ(calc(var(--i) * -46px));
   transition:
-    transform .8s cubic-bezier(.2,.8,.2,1),
-    background .55s ease, border-color .55s ease, box-shadow .4s ease;
+    transform .7s cubic-bezier(.2,.8,.2,1),
+    background .55s ease, border-color .55s ease, color .55s ease,
+    opacity .55s ease, box-shadow .4s ease;
   will-change:transform;
 }
-.plate[data-l="1"]{--lc:var(--l1);}
-.plate[data-l="2"]{--lc:var(--l2);}
-.plate[data-l="3"]{--lc:var(--l3);}
-.plate[data-l="4"]{--lc:var(--l4);}
-.plate[data-l="5"]{--lc:var(--l5);}
-/* engaged tumbler: snaps onto the radius and fills */
-.plate.in{--rot:0deg;background:var(--lc);border:2.5px solid var(--paper);}
-/* layer label rides the top radius */
+/* label runs along a radius, from the hub outward */
 .plate > span:first-child{
-  position:absolute;top:0;left:50%;transform:translate(-50%,-50%);z-index:5;
-  font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;line-height:1;
-  white-space:nowrap;color:var(--ink-faint);
-  background:var(--paper);padding:.3rem .55rem;border-radius:999px;border:1px solid var(--line);
-  display:inline-flex;align-items:center;gap:.42rem;
-  transition:color .4s ease,border-color .4s ease,box-shadow .4s ease;
+  position:absolute;top:50%;left:50%;width:44%;
+  transform-origin:0 50%;transform:translateY(-50%);
+  font-family:var(--font-mono);font-size:.82rem;letter-spacing:.05em;line-height:1.05;text-transform:uppercase;font-weight:500;
 }
-.plate > span:first-child::before{
-  content:"";width:.5em;height:.5em;border-radius:50%;background:var(--lc);flex:none;
+.plate .idx{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateX(-1.1em);
+  font-weight:400;font-size:.72rem;opacity:.6;
 }
-.plate.in > span:first-child{color:var(--ink);border-color:var(--line-strong);}
-.plate .idx{display:none;}
-.plate.focus > span:first-child{
-  color:var(--ink);border-color:var(--ink);box-shadow:-3px 3px 0 0 rgba(24,20,16,.14);
-}
+.plate.in{border-style:solid;}
+.plate.in[data-l="1"]{background:var(--l1);border-color:var(--l1);color:#F6F2EA;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
+.plate.in[data-l="2"]{background:var(--l2);border-color:var(--l2);color:var(--ink);box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
+.plate.in[data-l="3"]{background:var(--l3);border-color:var(--l3);color:#0B2B25;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
+.plate.in[data-l="4"]{background:var(--l4);border-color:var(--l4);color:#FDF3F8;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.08);}
+.plate.in[data-l="5"]{background:var(--l5);border-color:var(--l5);color:#F6F2EA;box-shadow:-14px 14px 0 -4px rgba(24,20,16,.12);}
+.plate.focus{box-shadow:-18px 18px 0 -4px rgba(24,20,16,.16);}
+.plate.in.lift{transform:translateZ(calc(var(--i) * -46px + 92px));opacity:.55;}
 /* signal flows, screen space */
 .flow{
   position:absolute;top:14%;bottom:14%;width:18px;opacity:0;transition:opacity .8s ease .15s;
@@ -496,10 +477,11 @@ footer .flinks{display:flex;gap:1.8rem;}
   .hero-scrolly{height:760vh;}
   .hero-stage{grid-template-columns:1fr;gap:0;align-content:center;padding-top:5.5rem;}
   .hero-copy{min-height:430px;order:2;}
-  .iso-scene{height:360px;order:1;}
-  .iso{width:min(300px,84vw);}
-  .plate{width:calc(100% - var(--i) * 54px);}
-  .plate > span:first-child{font-size:.56rem;padding:.24rem .45rem;}
+  .iso-scene{height:300px;order:1;}
+  .iso{width:min(230px,60vw);transform:translateY(-40px) rotateX(57deg) rotateZ(-45deg);}
+  .plate{transform:translateZ(calc(var(--i) * -34px));}
+  .plate.in.lift{transform:translateZ(calc(var(--i) * -34px + 64px));}
+  .plate > span:first-child{font-size:.62rem;}
   h1{font-size:clamp(2rem,8vw,2.6rem);}
   .panel h3{font-size:1.5rem;}
   .hero-progress{display:none;}
@@ -593,11 +575,11 @@ footer .flinks{display:flex;gap:1.8rem;}
           </svg>
         </div>
         <div class="iso">
-          <div class="plate" data-l="1" style="--i:0;--off:-34deg"><span>Strategy &amp; Outcomes</span><span class="idx">L1</span></div>
-          <div class="plate" data-l="2" style="--i:1;--off:42deg"><span>People &amp; Agents</span><span class="idx">L2</span></div>
-          <div class="plate" data-l="3" style="--i:2;--off:-58deg"><span>Process &amp; Workflows</span><span class="idx">L3</span></div>
-          <div class="plate" data-l="4" style="--i:3;--off:30deg"><span>Platforms &amp; Tools</span><span class="idx">L4</span></div>
-          <div class="plate" data-l="5" style="--i:4;--off:-22deg"><span>Data &amp; Context</span><span class="idx">L5</span></div>
+          <div class="plate" data-l="1" style="--i:0"><span>Strategy &amp; Outcomes</span><span class="idx">L1</span></div>
+          <div class="plate" data-l="2" style="--i:1"><span>People &amp; Agents</span><span class="idx">L2</span></div>
+          <div class="plate" data-l="3" style="--i:2"><span>Process &amp; Workflows</span><span class="idx">L3</span></div>
+          <div class="plate" data-l="4" style="--i:3"><span>Platforms &amp; Tools</span><span class="idx">L4</span></div>
+          <div class="plate" data-l="5" style="--i:4"><span>Data &amp; Context</span><span class="idx">L5</span></div>
         </div>
         <div class="flow up" id="flowUp">
           <span class="flow-label">Signal flows up</span>
@@ -870,7 +852,6 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
 // hero scrollytelling: 7 states (intro, 5 layers, loop)
 const scrolly = document.querySelector('.hero-scrolly');
-const iso = document.querySelector('.iso');
 const plates = [...document.querySelectorAll('.plate')];
 const panels = [...document.querySelectorAll('.panel')];
 const dots = [...document.querySelectorAll('#heroProgress b')];
@@ -898,8 +879,6 @@ function onScroll(){
   scrollCue.classList.toggle('hide', step > 0);
   flowDown.classList.toggle('show', step === STATES - 1);
   flowUp.classList.toggle('show', step === STATES - 1);
-  // all tumblers aligned on the final state = unlocked
-  iso.classList.toggle('unlocked', step === STATES - 1);
 }
 addEventListener('scroll', onScroll, {passive:true});
 addEventListener('resize', onScroll);
