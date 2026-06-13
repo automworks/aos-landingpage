@@ -315,7 +315,14 @@ h1 .hl::after{
   max-width:46rem;margin:1.4rem auto 0;
 }
 .loop h2 .dn{color:var(--ink);}
-.loop h2 .up{color:var(--amber-deep);}
+.loop h2 .up{color:var(--ink);position:relative;white-space:nowrap;isolation:isolate;}
+.loop h2 .up::after{
+  content:"";position:absolute;left:-.06em;right:-.06em;bottom:.04em;height:.34em;
+  background:var(--amber);z-index:-1;border-radius:var(--radius-sm);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .7s cubic-bezier(.2,.7,.2,1);
+}
+.loop .reveal.in h2 .up::after{transform:scaleX(1);}
 .loop p{max-width:34rem;margin:1.6rem auto 0;color:var(--ink-soft);font-size:1.1rem;}
 .loop-media{
   max-width:1080px;margin:3.6rem auto 0;padding:0 6vw;
