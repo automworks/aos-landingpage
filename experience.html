@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Adaptive OS | Redesign work that matters</title>
+<meta name="description" content="An interactive 3D walkthrough of Adaptive OS: five layers, one loop. Scroll to climb the operating system your team actually runs on." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23181410'/%3E%3Crect x='5' y='7' width='22' height='3.6' rx='1.8' fill='%23F6F2EA'/%3E%3Crect x='8' y='14.2' width='19' height='3.6' rx='1.8' fill='%23FFCD00'/%3E%3Crect x='5' y='21.4' width='22' height='3.6' rx='1.8' fill='%23F6F2EA'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://api.fontshare.com" />
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@300,400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#F6F2EA;
+  --paper-raised:#FDFBF6;
+  --ink:#181410;
+  --ink-soft:#5C5546;
+  --ink-faint:#8C8472;
+  --line:#E2DACA;
+  --line-strong:#CFC5B0;
+  --amber:#FFCD00;
+  --amber-text:#E9B30B;
+  --amber-deep:#C99400;
+  --l1:#4A453D; --l2:#FFCD00; --l3:#17A38B; --l4:#CE3B82; --l5:#181410;
+  --radius:4px;
+  --font-display:'General Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --nav-h:66px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--font-display);line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} }
+
+.mono{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);}
+
+/* ---------------------------------------------------------------- stage */
+#stage{
+  position:fixed;inset:0;z-index:0;
+  touch-action:pan-y;              /* let the page scroll; drag still orbits */
+  display:block;width:100%;height:100%;
+}
+body.no-webgl #stage{display:none;}
+
+/* Paper: grain, fibre and a soft vignette, laid over the render so the
+   WebGL frame and the HTML share one sheet. */
+#grain{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  opacity:.5;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E");
+}
+#vignette{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(115% 95% at 58% 42%,rgba(246,242,234,0) 42%,rgba(226,218,202,.55) 100%);
+}
+
+/* ------------------------------------------------------------------ nav
+   Scoped to #topnav on purpose: the section rail is also a <nav>, and a bare
+   `nav` selector hands it this bar's full-width background. */
+#topnav{
+  position:fixed;top:0;left:0;right:0;z-index:40;height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(1.1rem,4vw,3rem);
+  /* No backdrop-filter here: it forces a backdrop root that Chromium then has
+     to composite against #grain's multiply blend, which corrupts the page. The
+     gradient alone does the job. */
+  background:linear-gradient(to bottom,rgba(246,242,234,.96) 40%,rgba(246,242,234,0));
+}
+.nav-left{display:flex;align-items:baseline;gap:.85rem;}
+.logo{text-decoration:none;color:var(--ink);font-size:1.16rem;font-weight:300;letter-spacing:-.025em;display:flex;align-items:baseline;}
+.logo b{font-weight:700;}
+.logo .dot{width:.4em;height:.4em;border-radius:50%;background:var(--amber);display:inline-block;margin:0 .14em;}
+.nav-by{font-size:.66rem;}
+.nav-links{display:flex;align-items:center;gap:1.5rem;}
+.nav-links a{
+  font-family:var(--font-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);text-decoration:none;transition:color .18s;
+}
+.nav-links a:hover{color:var(--ink);}
+.nav-links a.btn{
+  border:1.5px solid var(--ink);border-radius:999px;padding:.5rem 1.05rem;
+  background:transparent;color:var(--ink);
+  transition:background .2s,color .2s;
+}
+.nav-links a.btn:hover{background:var(--ink);color:var(--paper);}
+@media (max-width:820px){ .nav-by,.nav-links a:not(.btn){display:none;} }
+
+/* -------------------------------------------------------------- content */
+/* main sits above the canvas for stacking, but must not swallow the pointer:
+   only .copy takes events, everything else falls through to the drawing. */
+main{position:relative;z-index:10;pointer-events:none;}
+section{
+  min-height:100vh;min-height:100svh;
+  display:flex;align-items:center;
+  padding:calc(var(--nav-h) + 2rem) clamp(1.1rem,4vw,3rem) 4rem;
+  pointer-events:none;                 /* the canvas underneath stays draggable */
+}
+.copy{
+  pointer-events:auto;
+  width:min(38rem,42vw);
+  transition:opacity .5s ease,transform .5s ease;
+}
+.copy.dim{opacity:.12;transform:translateY(12px);}
+@media (prefers-reduced-motion:reduce){ .copy{transition:none;} .copy.dim{opacity:.5;transform:none;} }
+
+.kicker{display:flex;align-items:center;gap:.6rem;margin-bottom:1.1rem;}
+.kicker-dot{width:9px;height:9px;border-radius:50%;background:var(--amber);flex:none;}
+
+h1{
+  font-size:clamp(2.6rem,6.6vw,5.1rem);font-weight:700;letter-spacing:-.038em;
+  line-height:.94;text-transform:uppercase;
+}
+h1 .amber{color:var(--amber-text);}
+h1 .thin{font-weight:300;color:var(--ink-faint);}
+.underline{
+  display:block;width:min(15rem,55%);height:9px;margin-top:1rem;border-radius:9px;
+  background:var(--amber);opacity:.85;
+  transform:skewX(-14deg);
+}
+h2{font-size:clamp(1.9rem,3.5vw,2.9rem);font-weight:700;letter-spacing:-.03em;line-height:1.04;}
+h2 .thin{font-weight:300;color:var(--ink-faint);}
+
+.lede{margin-top:1.35rem;font-size:1.06rem;color:var(--ink-soft);max-width:32rem;}
+.body{margin-top:1rem;color:var(--ink-soft);max-width:31rem;}
+.quote{
+  margin-top:1.3rem;padding-left:1rem;border-left:2px solid var(--amber);
+  font-size:1.02rem;font-style:italic;color:var(--ink);max-width:29rem;
+}
+
+.layer-tag{display:flex;align-items:center;gap:.65rem;margin-bottom:.9rem;}
+.layer-tag i{width:13px;height:13px;border-radius:3px;flex:none;}
+.layer-tag span{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);}
+
+.facts{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem;}
+.facts span{
+  font-family:var(--font-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid var(--line-strong);border-radius:999px;padding:.36rem .8rem;color:var(--ink-soft);
+  background:rgba(253,251,246,.6);
+}
+
+.ctas{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.9rem;}
+.btn{
+  font-family:var(--font-mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;
+  text-decoration:none;color:var(--paper);background:var(--ink);
+  border:1.5px solid var(--ink);border-radius:999px;padding:.72rem 1.35rem;
+  display:inline-flex;align-items:center;gap:.5rem;transition:transform .16s,background .2s,color .2s;
+}
+.btn:hover{transform:translateY(-2px);}
+.btn.ghost{background:transparent;color:var(--ink);}
+.btn.ghost:hover{background:var(--ink);color:var(--paper);}
+.hint{margin-top:1.6rem;font-size:.72rem;}
+
+/* --------------------------------------------------------- layer labels
+   Crisp HTML type pinned to the 3D tiers — the annotated-drawing feel. */
+#labels{position:fixed;inset:0;z-index:12;pointer-events:none;}
+.tier-label{
+  position:absolute;transform:translate(-50%,-50%);
+  display:flex;align-items:center;gap:.5rem;white-space:nowrap;
+  font-family:var(--font-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink);background:rgba(253,251,246,.86);
+  border:1px solid var(--line-strong);border-radius:999px;padding:.3rem .75rem;
+  opacity:0;transition:opacity .35s ease;
+}
+.tier-label i{width:8px;height:8px;border-radius:2px;flex:none;}
+.tier-label b{font-weight:500;color:var(--ink-faint);}
+
+/* ----------------------------------------------------------------- rail */
+#rail{
+  position:fixed;right:clamp(.8rem,2.2vw,1.8rem);top:50%;transform:translateY(-50%);
+  left:auto;width:auto;height:auto;padding:0;background:none;
+  z-index:30;display:flex;flex-direction:column;gap:.5rem;align-items:flex-end;
+}
+#rail button{
+  display:flex;align-items:center;gap:.6rem;background:none;border:none;cursor:pointer;
+  font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-faint);padding:.22rem 0;transition:color .2s;
+}
+#rail button .bar{
+  width:26px;height:2px;background:var(--line-strong);border-radius:2px;transition:width .25s,background .25s;
+}
+#rail button:hover{color:var(--ink-soft);}
+#rail button[aria-current="true"]{color:var(--ink);}
+#rail button[aria-current="true"] .bar{width:44px;background:var(--amber);}
+#rail .lbl{opacity:0;transition:opacity .2s;}
+#rail:hover .lbl,#rail button[aria-current="true"] .lbl{opacity:1;}
+@media (max-width:700px){ #rail .lbl{display:none;} #rail{gap:.65rem;} }
+
+/* ---------------------------------------------------------------- intro */
+#intro{
+  position:fixed;inset:0;z-index:60;background:var(--paper);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem;
+  transition:opacity .6s ease,visibility .6s;
+}
+#intro.gone{opacity:0;visibility:hidden;}
+#intro .pen{width:180px;height:2px;background:var(--line-strong);position:relative;overflow:hidden;border-radius:2px;}
+#intro .pen::after{
+  content:"";position:absolute;inset:0;width:38%;background:var(--amber);
+  animation:draw 1.15s ease-in-out infinite;
+}
+@keyframes draw{0%{transform:translateX(-100%);}100%{transform:translateX(360%);}}
+
+/* ------------------------------------------------------------- fallback */
+#fallback{display:none;}
+body.no-webgl #fallback{display:block;}
+body.no-webgl #rail,body.no-webgl #labels,body.no-webgl #vignette{display:none;}
+body.no-webgl .copy{width:min(46rem,100%);}
+body.no-webgl .hint{display:none;}   /* "drag to look around" with nothing to drag */
+body.no-webgl section{min-height:auto;padding-top:3rem;padding-bottom:3rem;border-bottom:1px solid var(--line);}
+body.no-webgl section:first-of-type{padding-top:calc(var(--nav-h) + 2.5rem);}
+.fallback-note{
+  max-width:46rem;margin:1.5rem auto 0;padding:1rem 1.2rem;
+  border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--paper-raised);
+  font-size:.9rem;color:var(--ink-soft);
+}
+
+/* ------------------------------------------------------------ responsive */
+@media (max-width:900px){
+  section{align-items:flex-end;padding-bottom:2.5rem;}
+  .copy{
+    width:100%;
+    background:linear-gradient(to top,var(--paper) 62%,rgba(246,242,234,.86) 88%,rgba(246,242,234,0));
+    padding:1.6rem 0 .5rem;
+  }
+  .lede,.body,.quote{max-width:none;}
+  #rail{right:.7rem;}
+  #labels{display:none;}
+}
+
+footer{
+  position:relative;z-index:10;background:var(--ink);color:var(--paper);
+  padding:3rem clamp(1.1rem,4vw,3rem);
+  display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap;
+}
+footer .logo{color:var(--paper);}
+footer a{color:var(--paper);text-decoration:none;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75;}
+footer a:hover{opacity:1;}
+footer .flinks{display:flex;gap:1.4rem;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<canvas id="stage" aria-hidden="true"></canvas>
+<div id="vignette" aria-hidden="true"></div>
+<div id="grain" aria-hidden="true"></div>
+
+<div id="labels" aria-hidden="true"></div>
+
+<nav id="topnav">
+  <div class="nav-left">
+    <a class="logo" href="#s0"><span>adaptive</span><span class="dot"></span><b>OS</b></a>
+    <span class="nav-by mono">by The Design Gym</span>
+  </div>
+  <div class="nav-links">
+    <a href="index.html">Overview</a>
+    <a href="index.html#events">Events</a>
+    <a href="index.html#assessment" class="btn">Take the test &rarr;</a>
+  </div>
+</nav>
+
+<nav id="rail" aria-label="Section navigation" hidden></nav>
+
+<main>
+
+  <section id="s0" data-shot="0">
+    <div class="copy">
+      <div class="kicker">
+        <span class="kicker-dot"></span>
+        <span class="mono">Your team's operating system</span>
+      </div>
+      <h1>Redesign<br><span class="amber">work</span> that<br>matters</h1>
+      <span class="underline"></span>
+      <p class="lede">Adaptive OS is a self-improving operating system for teams. Five layers, one loop: strategy cascades into execution, and what execution learns climbs back up.</p>
+      <div class="ctas">
+        <a href="#s1" class="btn">Climb the structure &rarr;</a>
+        <a href="index.html#assessment" class="btn ghost">Take the test</a>
+      </div>
+      <p class="hint mono">Scroll to ascend &middot; drag to look around &middot; click a floor to jump</p>
+    </div>
+  </section>
+
+  <section id="s1" data-shot="1">
+    <div class="copy">
+      <div class="layer-tag"><i style="background:var(--l1)"></i><span>Layer 01 / 05</span></div>
+      <h2>Strategy &amp; Outcomes</h2>
+      <p class="body">The top of the cascade, and the smallest floor in the building. Direction lives here, written down and shared, so every layer below inherits it instead of guessing at it.</p>
+      <p class="quote">"Why we exist, where we're going, and how we'll get there."</p>
+      <div class="facts"><span>North star</span><span>Outcome ladders</span><span>Quarterly bets</span></div>
+    </div>
+  </section>
+
+  <section id="s2" data-shot="2">
+    <div class="copy">
+      <div class="layer-tag"><i style="background:var(--l2)"></i><span>Layer 02 / 05</span></div>
+      <h2>People &amp; Agents</h2>
+      <p class="body">Humans and AI agents on one roster. Roles, ownership and growth paths designed for mixed teams, so nobody is left wondering which of the two is accountable.</p>
+      <p class="quote">"Who we are, how we're organized, and how we grow."</p>
+      <div class="facts"><span>Mixed rosters</span><span>Clear ownership</span><span>Capability paths</span></div>
+    </div>
+  </section>
+
+  <section id="s3" data-shot="3">
+    <div class="copy">
+      <div class="layer-tag"><i style="background:var(--l3)"></i><span>Layer 03 / 05</span></div>
+      <h2>Process &amp; Workflows</h2>
+      <p class="body">Cycle-based delivery with your own methodology inside. SAFe, Scrum, or whatever your teams already trust: the OS governs the rhythm, not the ritual.</p>
+      <p class="quote">"How work gets done, governed, and improved."</p>
+      <div class="facts"><span>Bring your own method</span><span>Cadence over ceremony</span><span>Built-in retros</span></div>
+    </div>
+  </section>
+
+  <section id="s4" data-shot="4">
+    <div class="copy">
+      <div class="layer-tag"><i style="background:var(--l4)"></i><span>Layer 04 / 05</span></div>
+      <h2>Platforms &amp; Tools</h2>
+      <p class="body">Stack-agnostic by design. Google, Microsoft and the systems you already run, wired to the layers above them rather than bolted on beside them.</p>
+      <p class="quote">"Which systems and infrastructure enable our work."</p>
+      <div class="facts"><span>Stack agnostic</span><span>Wired to intent</span><span>No rip-and-replace</span></div>
+    </div>
+  </section>
+
+  <section id="s5" data-shot="5">
+    <div class="copy">
+      <div class="layer-tag"><i style="background:var(--l5)"></i><span>Layer 05 / 05</span></div>
+      <h2>Data &amp; Context</h2>
+      <p class="body">The foundation, and the widest floor. What you know and what you've learned, captured as a context layer that both people and agents can actually use.</p>
+      <p class="quote">"What we know, what we've learned, and how we feed it back."</p>
+      <div class="facts"><span>Shared context</span><span>Decision memory</span><span>Agent-readable</span></div>
+    </div>
+  </section>
+
+  <section id="s6" data-shot="6">
+    <div class="copy">
+      <div class="layer-tag"><i class="loop" style="background:var(--amber)"></i><span>The loop</span></div>
+      <h2>Intent flows down.<br><span class="thin">Signal flows up.</span></h2>
+      <p class="body">Most operating models are documents. This one is a directional system. Strategy cascades into execution, and what execution learns feeds straight back into strategy. The loop is what makes the OS adaptive instead of static.</p>
+      <div class="facts"><span>Cascade</span><span>Feedback</span><span>Self-improving</span></div>
+    </div>
+  </section>
+
+  <section id="s7" data-shot="7">
+    <div class="copy">
+      <div class="kicker"><span class="kicker-dot"></span><span class="mono">Where to start</span></div>
+      <h2>Stop running in place.<br><span class="thin">Start moving together.</span></h2>
+      <p class="body">Find out where your operating system stands today, then install the layers you are missing. The assessment takes about eight minutes.</p>
+      <div class="ctas">
+        <a href="index.html#assessment" class="btn">Take the test &rarr;</a>
+        <a href="index.html" class="btn ghost">Read the full overview</a>
+      </div>
+      <div id="fallback" class="fallback-note">
+        Your browser could not start WebGL, so the interactive drawing is switched off.
+        Everything the structure says is written above, and the
+        <a href="index.html" style="color:var(--amber-deep)">main overview</a> covers it in full.
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <a class="logo" href="#s0"><span>adaptive</span><span class="dot"></span><b>OS</b></a>
+  <div class="flinks">
+    <a href="index.html">Overview</a>
+    <a href="brand-board.html">Brand board</a>
+    <a href="index.html#assessment">Take the test</a>
+  </div>
+</footer>
+
+<div id="intro"><span class="mono">Drawing the system</span><span class="pen"></span></div>
+
+<script type="module">
+import { createScene, LAYERS } from './assets/aos-scene.js';
+
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const canvas  = document.getElementById('stage');
+const intro   = document.getElementById('intro');
+const rail    = document.getElementById('rail');
+const labelBox= document.getElementById('labels');
+const sections= [...document.querySelectorAll('main section')];
+
+/* --------------------------------------------------------- WebGL or not */
+function webglOK(){
+  try{
+    const c = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl')));
+  }catch(e){ return false; }
+}
+
+if(!webglOK()){
+  document.body.classList.add('no-webgl');
+  intro.classList.add('gone');
+}else{
+  boot();
+}
+
+function boot(){
+  /* ------------------------------------------------------- tier labels */
+  const labels = LAYERS.map((L,i)=>{
+    const el = document.createElement('div');
+    el.className = 'tier-label';
+    el.innerHTML = `<i style="background:${L.color}"></i><b>${L.id}</b> ${L.name}`;
+    labelBox.appendChild(el);
+    return el;
+  });
+
+  /* -------------------------------------------------------------- rail */
+  rail.hidden = false;
+  const RAIL = [
+    {s:0,label:'Overview'},{s:1,label:'L1 Strategy'},{s:2,label:'L2 People'},
+    {s:3,label:'L3 Process'},{s:4,label:'L4 Platforms'},{s:5,label:'L5 Data'},
+    {s:6,label:'The loop'},{s:7,label:'Start'},
+  ];
+  const railBtns = RAIL.map(r=>{
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.innerHTML = `<span class="lbl">${r.label}</span><span class="bar"></span>`;
+    b.setAttribute('aria-label', `Go to ${r.label}`);
+    b.addEventListener('click', ()=> goTo(r.s));
+    rail.appendChild(b);
+    return b;
+  });
+  railBtns[0].setAttribute('aria-current', 'true');
+
+  function goTo(i){
+    sections[i].scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block:'start' });
+  }
+
+  /* ------------------------------------------------------------- scene */
+  // Declared before createScene: the render loop calls back into placeLabels.
+  let hoveredLayer = -1;
+  let current = 0;
+  let scene;
+  try{
+    scene = createScene(canvas, {
+      reduced,
+      onPick: (i)=> goTo(i + 1),               // section 1 is layer 0
+      onHover: (i)=> { hoveredLayer = i; },
+      onFrame: placeLabels,
+    });
+  }catch(err){
+    console.error('Adaptive OS scene failed to start:', err);
+    document.body.classList.add('no-webgl');
+    intro.classList.add('gone');
+    return;
+  }
+
+  /* ------------------------------------------------ scroll -> progress
+     Measured from real section geometry rather than assuming 100vh, so a
+     section that grows on a small screen still maps to exactly one shot. */
+  let ticking = false;
+  function measure(){
+    return sections.map(s=>{
+      const r = s.getBoundingClientRect();
+      return { top: r.top + window.scrollY, height: r.height };
+    });
+  }
+  let geo = measure();
+
+  function progressNow(){
+    const eye = window.scrollY + window.innerHeight * 0.5;
+    if(eye <= geo[0].top + geo[0].height * 0.5) return 0;
+    for(let i=0;i<geo.length-1;i++){
+      const a = geo[i].top + geo[i].height*0.5;
+      const b = geo[i+1].top + geo[i+1].height*0.5;
+      if(eye < b) return i + (eye - a)/(b - a);
+    }
+    return geo.length - 1;
+  }
+
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(()=>{
+      ticking = false;
+      const p = progressNow();
+      scene.setProgress(p);
+
+      const idx = Math.max(0, Math.min(sections.length-1, Math.round(p)));
+      scene.setActiveLayer(scene.sectionLayer(idx));
+
+      if(idx !== current){
+        current = idx;
+        railBtns.forEach((b,i)=> b.setAttribute('aria-current', i===idx ? 'true':'false'));
+      }
+      // Fade copy that is not the section you are reading.
+      sections.forEach((s,i)=>{
+        s.querySelector('.copy').classList.toggle('dim', Math.abs(p - i) > 0.42);
+      });
+    });
+  }
+
+  function placeLabels(anchors){
+    // Names ride on the tiers in the wide shots, and on whatever you point at.
+    const wide = current <= 0 || current >= 6;
+    // Keep them out of the two places type already lives: under the nav bar,
+    // and over the copy column on desktop.
+    const navH = 78;
+    const copyEl = sections[current] && sections[current].querySelector('.copy');
+    const guard = (window.innerWidth > 900 && copyEl) ? copyEl.getBoundingClientRect().right + 28 : 0;
+
+    const railRoom = 168;                       // keep clear of the section rail
+    for(const a of anchors){
+      const el = labels[a.idx];
+      const clear = a.y > navH && a.x > guard;
+      const show = a.visible && clear && (wide || hoveredLayer === a.idx);
+      el.style.opacity = show ? (hoveredLayer === a.idx ? 1 : 0.82) : 0;
+      if(show){
+        const half = (el.offsetWidth || 200) / 2;
+        const min = guard + half + 8;
+        const max = window.innerWidth - railRoom - half;
+        el.style.left = Math.max(min, Math.min(a.x, Math.max(min, max))) + 'px';
+        el.style.top = a.y + 'px';
+      }
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', ()=>{ geo = measure(); onScroll(); });
+  document.addEventListener('visibilitychange', ()=> document.hidden ? scene.pause() : scene.resume());
+
+  // Arrow keys move a section at a time, matching the rail.
+  window.addEventListener('keydown', (e)=>{
+    if(e.metaKey || e.ctrlKey || e.altKey) return;
+    if(e.key === 'ArrowDown' || e.key === 'ArrowRight'){ e.preventDefault(); goTo(Math.min(sections.length-1, current+1)); }
+    else if(e.key === 'ArrowUp' || e.key === 'ArrowLeft'){ e.preventDefault(); goTo(Math.max(0, current-1)); }
+    else if(e.key === 'Home'){ e.preventDefault(); goTo(0); }
+    else if(e.key === 'End'){ e.preventDefault(); goTo(sections.length-1); }
+  });
+
+  onScroll();
+  requestAnimationFrame(()=> requestAnimationFrame(()=>{
+    geo = measure();
+    onScroll();
+    intro.classList.add('gone');
+  }));
+}
+</script>
+</body>
+</html>
